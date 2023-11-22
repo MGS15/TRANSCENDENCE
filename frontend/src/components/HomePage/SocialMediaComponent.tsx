@@ -1,0 +1,18 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import Xlogo from './assets/X.png'
+import InstagramLogo from './assets/instagram.png'
+import LinkedinLogo from './assets/linkedin.png'
+import GithubLogo from './assets/github.png'
+import interact from './assets/X.png'
+
+export default function SocialMedia(){
+	return(
+		<div className='SocialMedia'>
+		  <img src={GithubLogo} alt='pic'></img>
+		  <img src={LinkedinLogo} alt='pic'></img>
+		  <img src={InstagramLogo} alt='pic'></img>
+		  <img src={Xlogo} alt='pic'></img>
+		</div>
+	);
+  }
