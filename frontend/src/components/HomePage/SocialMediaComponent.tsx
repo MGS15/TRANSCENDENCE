@@ -1,14 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import Xlogo from './assets/X.png'
-import InstagramLogo from './assets/instagram.png'
-import LinkedinLogo from './assets/linkedin.png'
-import GithubLogo from './assets/github.png'
-import interact from './assets/X.png'
+import Xlogo from '../../assets/X.png'
+import InstagramLogo from '../../assets/instagram.png'
+import LinkedinLogo from '../../assets/linkedin.png'
+import GithubLogo from '../../assets/github.png'
 
 export default function SocialMedia(){
 	return(
-		<div className='SocialMedia'>
+		<div className='SocialMedia flex gap-3'>
 		  <img src={GithubLogo} alt='pic'></img>
 		  <img src={LinkedinLogo} alt='pic'></img>
 		  <img src={InstagramLogo} alt='pic'></img>
