@@ -5,20 +5,11 @@ import gameController from '../../assets/GameController.png'
 import startGame from '../../assets/StartGame.png'
 import Overview from '../../assets/Overview.png'
 import StaySafe from '../../assets/StaySafe.png'
-
-function Spliter(props: any) {
-	return (
-		<div className='Feat flex items-center place-content-evenly mx-auto p-3 max-w-[1536px] my-5'>
-		  <hr className='leftHr border-solid border-black border-2 w-[40%] rounded-full'></hr>
-			<p className='gap-y-50 text-3xl font-pixelify'>{props.title}</p>
-		  <hr className='rightHr border-solid border-black border-2 w-[40%] rounded-full'></hr>
-		</div> 
-	);
-}
+import Spliter from '../Spliter'
 
 export default function FeaturesBloc(){
 	return (
-		<div>
+		<div id="about">
 			<Spliter title="FEATURES"/>
 			<div className='BigDiv gap-14 max-w-[1536px] m-auto lg:p-4 min-[0px]:flex-row min-[730px]:flex lg:flex min-[0px]:mx-5 2xl:m-auto 2xl:mt-10'>
 				<div className='leftDiv flex-col justify-content-center min-[0px]:w-[85%] sm:w-[75%] min-[730px]:w-[75%] m-auto'>

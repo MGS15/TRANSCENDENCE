@@ -4,15 +4,54 @@
 @tailwind utilities;
 
 :root {
-	--bgColor:  #E6E7E9;
+	--bgColor:  #F2F2F2;
 }
 
 * {
 	margin: 0;
 	padding: 0;
 	border: 0;
+	scroll-behavior: smooth;
 }
 
 body {
 	background-color: var(--bgColor);
+}
+
+.GameBoy{
+-webkit-animation: floating 2.5s ease-in-out infinite;
+		animation: floating 2.5s ease-in-out infinite;
+}
+  
+@keyframes floating {
+	0% {
+		-webkit-transform: translate(0, 0px);
+				transform: translate(0, 0px);
+	}
+	50%  {
+		-webkit-transform: translate(0, 35px);
+				transform: translate(0, 35px);
+	}
+	100%   {
+		-webkit-transform: translate(0, -0px);
+				transform: translate(0, -0px);
+	}
+}
+
+.Ft:hover{
+	-webkit-transform: scale(1.1);
+	transform: scale(1.02);
+	transition: 0.5s ease-in-out;
+}
+
+.Member:hover{
+	-webkit-transform: scale(1.1);
+	transform: scale(1.02);
+	transition: 0.5 ease-in-out;
+}
+
+.StartGame:hover{
+	-webkit-transform: scale(1.1);
+	transform: scale(1.02);
+	transition: 0.5s ease;
 }
