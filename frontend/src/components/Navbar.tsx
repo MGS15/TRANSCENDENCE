@@ -4,12 +4,12 @@ import SearchBar from "./SearchBar";
 
 const listItems = ["home", "about", "our-team", "button"].map((item: String, key: Number) => (
 	item === "button" ? (
-		<li className={`uppercase font-pixelify cursor-pointer py-2 h-auto`}>
+		<li className={` uppercase font-pixelify cursor-pointer py-2 h-auto min-[0px]:mb-4 min-[752px]:mb-0`}>
 			<MainButton name={`Join us`} url={`test.com`} />
 		</li>
 	) : (
 		<li  key={`${key}`} className={`uppercase font-pixelify py-2 text-primary
-			h-auto cursor-pointer lg:mr-10 md:mr-7`}>
+			h-auto cursor-pointer lg:mr-10 md:mr-7 `}>
 			<a href={key === 0 ? ("/") : ("/#" + item)} className="py-3 hover:text-secondary">
 				{item.replace('-', ' ')}
 			</a>
@@ -24,9 +24,9 @@ interface isOpen {
 const UnloggedNavBar: React.FC<isOpen> = (props) => (
 	<nav className={props.isOpen ? ("flex") : ("hidden md:flex")}>
 		<ul className={`
-			flex bg-background absolute md:relative flex-col
+			flex bg-DefaultColor absolute md:relative flex-col
 			md:flex-row w-full text-center items-center justify-content-center
-			top-9 left-0 md:top-0 md:flex
+			top-9 left-0 md:top-0 md:flex 
 		`}>
 			{listItems}
 		</ul>
@@ -59,7 +59,8 @@ const Navbar = ({isLogged}: {isLogged: Boolean}) => {
 
 	return (
 		<div className={`
-			container relative m-auto p-3 top-5 flex justify-between items-center
+			container relative p-3 top-5 flex justify-between items-center border-solid border-2 border-black shadow-[2px_4px_0px_0px_#000301]
+			max-w-[1536px] mb-11 min-[0px]:mx-5 2xl:mx-auto
 		`}>
 			<a href="/" className={`
 				font-xl font-bold text-primary uppercase font-pixelify md:text-2xl text-xl
