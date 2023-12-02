@@ -12,4 +12,4 @@ export default function SocialMedia(){
 		  <img src={Xlogo} alt='pic'></img>
 		</div>
 	);
-  }
+}
