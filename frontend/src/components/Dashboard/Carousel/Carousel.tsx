@@ -24,13 +24,13 @@ export default function Carousel(){
         {items.map((item) => {
           return(
             <div className="inline-flex w-full transition-transform delay-150 duration-1000 ease-in-out" style={{ transform: `translate(-${activeIndex * 100}%)`,
-          }}>
-             <CarouselItem item={item}/>
+              }}>
+              <CarouselItem item={item}/>
             </div>
-              );
+            );
         })}
       </div>
-      <div className="carousel-buttons flex justify-evenly mb-7 p-6 border-4 border-solid boder-black m-9 mt-0">
+      <div className="carousel-buttons flex justify-evenly mb-7 p-6 border-4 border-solid boder-black m-9 mt-0 min-[0px]:gap-x-[55%]">
         <button
           className="button-arrow cursor-pointer"
           onClick={() => {
@@ -57,6 +57,5 @@ export default function Carousel(){
         </button>
       </div>
     </div>
-    
   );
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { transform } from "typescript";
+import pic from '../../../assets/projecteur.png'
 
 export const items = [
   {
@@ -15,32 +16,32 @@ export const items = [
   {
     description: "Add first friend",
     title: "BE-FRIENDER",
-    icon: require("../../../assets/Throphy-05.png"),
+    icon: require("../../../assets/Throphy-03.png"),
   },
   {
     description: "Complete a combo of 3 consecutive wins",
     title: "WILDIN 'OUT",
-    icon: require("../../../assets/Throphy-03.png"),
+    icon: require("../../../assets/Throphy-04.png"),
   },
   {
     description: "Play a game in every single mode",
     title: "VERSATILE PONGER",
-    icon: require("../../../assets/Throphy-08.png"),
+    icon: require("../../../assets/Throphy-05.png"),
   },
   {
     description: "Win a game without conseiving a single goal",
     title: "THE WALL",
-    icon: require("../../../assets/Throphy-04.png"),
+    icon: require("../../../assets/Throphy-06.png"),
   },
   {
     description: "Add 3 friends",
     title: "THE SOCIALISER",
-    icon: require("../../../assets/Throphy-06.png"),
+    icon: require("../../../assets/Throphy-07.png"),
   },
   {
     description: "Complete a combo of 10 consecutive wins",
     title: "THE VANQUISHER",
-    icon: require("../../../assets/Throphy-07.png"),
+    icon: require("../../../assets/Throphy-08.png"),
   },
   {
     description: "Win a game in every single mode",
@@ -56,9 +57,11 @@ export const items = [
 
 export const CarouselItem = ({ item } : { item: any }) => {
   return (
-    <div  className="snap-center m-auto carousel-item inline-flex flex-col place-items-center justify-center h-[340px]">
-      <img className="carousel-img animated hinge min-[0px]:w-[190px] min-[0px]:h-[190px] md:w-[250px] md:h-[250px] p-8" src={item.icon} />
-      <div className="carousel-item-text min-[0px]:text-xl xl:text-2xl font-Nova font-bold">{item.title}</div>
+    <div className="snap-center m-auto carousel-item inline-flex flex-col place-items-center justify-center h-[340px]">
+      <img className="carousel-img min-[0px]:w-[190px] min-[0px]:h-[190px] md:w-[300px] md:h-[290px] p-6 drop-shadow-[30px_30px_3px_rgba(0,0,0,0.40)]" src={item.icon}/>
+      <h1 className="m-4 mb-8 carousel-item selection:bg-buttonColor min-[0px]:text-xl xl:text-2xl font-Nova font-bold">
+        {item.title}
+      </h1>
     </div>
   );
 };
