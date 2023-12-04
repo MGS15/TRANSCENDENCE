@@ -1,4 +1,3 @@
-import React from "react";
 import zoomicon from '../assets/zoomicon.svg'
 
 const SearchBar = () => (
@@ -11,7 +10,7 @@ const SearchBar = () => (
 			`} placeholder="Search People / Chat rooms.." required>
 			</input>
 			<button type="submit" className={`bg-buttonColor text-textColor
-				rounded-tr-full rounded-br-full border-2 w-12 font-pixelify
+				rounded-tr-full rounded-br-full border-4 w-12 font-pixelify
 				border-solid border-textColor h-[39px] focus:outline-none
 				flex items-center justify-center shadow-buttonShadow
 				`}>

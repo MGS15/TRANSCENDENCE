@@ -29,18 +29,13 @@ export const items = [
     icon: require("../../../assets/Throphy-05.png"),
   },
   {
-    description: "Win a game without conseiving a single goal",
-    title: "THE WALL",
-    icon: require("../../../assets/Throphy-06.png"),
-  },
-  {
     description: "Add 3 friends",
     title: "THE SOCIALISER",
     icon: require("../../../assets/Throphy-07.png"),
   },
   {
-    description: "Complete a combo of 10 consecutive wins",
-    title: "THE VANQUISHER",
+    description: "Win a game without conseiving a single goal",
+    title: "THE WALL",
     icon: require("../../../assets/Throphy-08.png"),
   },
   {
@@ -57,8 +52,8 @@ export const items = [
 
 export const CarouselItem = ({ item } : { item: any }) => {
   return (
-    <div className="snap-center m-auto carousel-item inline-flex flex-col place-items-center justify-center h-[340px]">
-      <img className="carousel-img min-[0px]:w-[190px] min-[0px]:h-[190px] md:w-[300px] md:h-[290px] p-6 drop-shadow-[30px_30px_3px_rgba(0,0,0,0.40)]" src={item.icon}/>
+    <div className="snap-center m-auto carousel-item inline-flex flex-col place-items-center justify-center h-[345px]">
+      <img className="carousel-img min-[0px]:w-[190px] min-[0px]:h-[190px] md:w-[250px] md:h-[350px] p-6 md:p-12 drop-shadow-[30px_30px_3px_rgba(0,0,0,0.40)]" src={item.icon}/>
       <h1 className="m-4 mb-8 carousel-item selection:bg-buttonColor min-[0px]:text-xl xl:text-2xl font-Nova font-bold">
         {item.title}
       </h1>

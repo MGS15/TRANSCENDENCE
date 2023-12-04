@@ -9,7 +9,7 @@ const listItems = ["home", "about", "our-team", "button"].map((item: String, key
 		</li>
 	) : (
 		<li  key={`${key}`} className={`uppercase font-pixelify py-2 text-primary
-			h-auto cursor-pointer lg:mr-10 md:mr-7 `}>
+			h-auto cursor-pointer lg:mr-10 md:mr-7`}>
 			<a href={key === 0 ? ("/") : ("/#" + item)} className="py-3 hover:text-secondary">
 				{item.replace('-', ' ')}
 			</a>
@@ -24,7 +24,7 @@ interface isOpen {
 const UnloggedNavBar: React.FC<isOpen> = (props) => (
 	<nav className={props.isOpen ? ("flex") : ("hidden md:flex")}>
 		<ul className={`
-			flex bg-DefaultColor absolute md:relative flex-col
+			flex  absolute md:relative flex-col
 			md:flex-row w-full text-center items-center justify-content-center
 			top-9 left-0 md:top-0 md:flex 
 		`}>
@@ -36,7 +36,7 @@ const UnloggedNavBar: React.FC<isOpen> = (props) => (
 const LoggedNavBar: React.FC<isOpen> = (props) => (
 	<nav className={props.isOpen ? ("flex") : ("hidden md:flex")}>
 		<ul className={`
-			flex bg-background absolute md:relative flex-col
+			flex  absolute md:relative flex-col
 			md:flex-row w-full text-center items-center justify-content-center
 			top-9 left-0 md:top-0 md:flex
 		`}>
@@ -59,11 +59,11 @@ const Navbar = ({isLogged}: {isLogged: Boolean}) => {
 
 	return (
 		<div className={`
-			container relative p-3 top-5 flex justify-between items-center border-solid border-2 border-black shadow-[2px_4px_0px_0px_#000301]
-			max-w-[1536px] mb-11 min-[0px]:mx-5 2xl:mx-auto
+			container relative p-3 top-5 flex justify-between items-center border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301]
+			max-w-[1536px] min-[0px]:mx-5 2xl:mx-auto 
 		`}>
 			<a href="/" className={`
-				font-xl font-bold text-primary uppercase font-pixelify md:text-2xl text-xl
+				font-bold text-primary uppercase font-pixelify md:text-3xl text-xl animate-pulse ml-4
 			`}>
 				Transcendence
 			</a>
