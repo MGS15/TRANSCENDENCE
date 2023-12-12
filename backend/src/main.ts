@@ -17,7 +17,7 @@ async function bootstrap() {
 			whitelist: true,
 			transform: true,
 			transformOptions: { enableImplicitConversion: true },
-		}),
+		}), 
 	);
 	await app.listen(8001);
 	const logger = winston.createLogger({

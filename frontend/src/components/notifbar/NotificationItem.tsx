@@ -11,26 +11,27 @@ const NotificationItem = ({ notif }: { notif: INotificaion }) => {
 				className={`flex lg:mr-3 w-[102px] h-[102px] sm:w-[72px] sm:h-[72px]
 			`}
 			>
-				<img
-					src={notif.initiator.avatar}
-					alt={notif.initiator.nickname}
+				{/* <img
+					// src={notif.roomename}
+					alt={notif.issuer_id.nickname}
 					className={`
 					border-2 border-solid border-textColor 
 					
-				`}
-				/>
+				`} */}
+				{/* /> */}
 			</div>
 			<div className={`flex justify-between flex-auto flex-col sm:flex-row gap-2 `}>
 				<div className="flex flex-col gap-1 justify-center">
-					<h1 className={`text-lg text-primary `}>{notif.initiator.user42}</h1>
+					<h1 className={`text-lg text-primary `}>{notif.issuer_id.nickname}</h1>
 					<p className="text-sm">
-						{notif.inviteType === InviteType.FRIEND
-							? notif.initiator.nickname + " " + FRIEND_REQUEST
-							: notif.inviteType === InviteType.GAME
-							  ? notif.initiator.nickname + " " + GAME_INVITE
-							  : notif.inviteType === InviteType.ROOM
-							    ? notif.initiator.nickname + " " + CHAT_ROOM
+						{notif.type === InviteType.Friend
+							? notif.issuer_id.nickname + " " + FRIEND_REQUEST
+							: notif.type === InviteType.Game
+							  ? notif.issuer_id.nickname + " " + GAME_INVITE + " "
+							  : notif.type === InviteType.Room
+							    ? notif.issuer_id.nickname + " " + CHAT_ROOM + " " + notif.room_id?.name
 							    : ""}
+				
 					</p>
 				</div>
 				<div
