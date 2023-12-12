@@ -86,21 +86,7 @@ const NotificationBar = () => {
 					</div>
 					<hr className="my-1 h-0.5 border-t-0 bg-textColor opacity-100" />
 					<div className={`flex flex-col flex-1 py-3 min-h-[100px] gap-2 px-2 sm:px-3 overflow-y-scroll`}>
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
-						<NotificationItem notif={notif} />
+						{a}
 					</div>
 				</div>
 			</section>
@@ -109,5 +95,3 @@ const NotificationBar = () => {
 };
 
 export default NotificationBar;
-
-
