@@ -5,6 +5,17 @@ const NotificationItem = ({ notif }: { notif: INotificaion }) => {
 	const CHAT_ROOM = "invited you to join the chat room:";
 	const GAME_INVITE = "challenged you to a game";
 
+	const AcceptHandler = async (InviteType: string) =>
+	{
+		const res = await fetch(`http://localhost:3001/${InviteType}?id=${notif.id}` , {method: "POST"})
+		console.log(res);
+	}
+
+	const RejectHandler = async (InviteType: string) =>
+	{
+		await fetch(`http://localhost:3001/${InviteType}?id=${notif.id}` , {method: "DELETE"});
+	}
+
 	return (
 		<div className={`border-solid border-2 border-textColor flex flex-row gap-3 p-1`}>
 			<div
@@ -38,7 +49,7 @@ const NotificationItem = ({ notif }: { notif: INotificaion }) => {
 					className={`grid grid-cols-2 gap-3 content-evenly p-2
 					 `}
 				>
-					<button className="flex items-center justify-center col-1">
+					<button className="flex items-center justify-center col-1" onClick={() => AcceptHandler(notif.type)}>
 						<svg
 							className={`fill-sucessColor`}
 							width="24"
@@ -50,7 +61,7 @@ const NotificationItem = ({ notif }: { notif: INotificaion }) => {
 							<path d="M20 4V6H18V8H16V10H14V12H12V14H10V16H9V17H7V16H6V14H4V13H2V16H4V18H6V20H7V21H9V20H10V18H12V16H14V14H16V12H18V10H20V8H22V4H20Z" />
 						</svg>
 					</button>
-					<button className="flex items-center justify-center col-1">
+					<button className="flex items-center justify-center col-1" onClick={() => RejectHandler(notif.type)}>
 						<svg
 							className={`stroke-errorColor`}
 							width="24"

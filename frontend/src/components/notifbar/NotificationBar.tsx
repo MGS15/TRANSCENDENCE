@@ -25,7 +25,6 @@ const NotificationBar = () => {
 			if (!response.ok)
 				throw new Error('Network response was not ok.');
 			const fetchedData = await response.json();
-			console.log("hhhhhhhhhhhhh", typeof fetchData)
 			setNotification(fetchedData);
 		}
 		fetchData();

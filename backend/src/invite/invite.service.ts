@@ -1,13 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "../prisma/prisma.service";
+import { RoomsService } from '../chat/rooms/rooms.service'
 
 @Injectable()
 export class InviteService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(private readonly prisma: PrismaService, private readonly roomservice: RoomsService) {}
+
+    RoomAcceptButton(id :number)
+    {
+        this.roomservice.acceptinviteRoom(id)
+    }
+
+    RoomRejectButton()
+    {
+
+    }
+
+    AcceptFriend()
+    {
+
+    }
+
+    RejectFriend()
+    {
+
+    }
 
     async getdatainvite()
     {
-
         const userid = 2;
         const invites = await this.prisma.invites.findMany({
             where:

@@ -512,13 +512,14 @@ export class RoomsService {
 	 */
 	async acceptinviteRoom(inviteid: number) {
 		try {
-			
+			console.log("zabbbb")
 			const res = await this.prisma.$transaction(async (trx) => {
 				const data = await trx.invites.findUnique({
 					where: {
 						id: inviteid,
 					},
 				});
+				console.log(data, "7achouch dzeb")
 				const changes  = await trx.rooms_members.create({
 					data: {
 						roomid: data.room,
