@@ -12,7 +12,7 @@ const SideBar = () => {
 			duration-300 h-screen min-h-screen float-right flex flex-row font-pixelify
 			fixed top-0 right-0`}>
 			<div className="py-32 z-50">
-				<button className={`bg-buttonColor border-l-2 border-y-2 border-solid
+				<button className={`bg-buttonColor border-l-2 border-y-2 border-solid 
 					border-textColor rounded-tl-full rounded-bl-full shadow-chatShadow
 					p-2 justify-center`}
 					onClick={toggleChatBar}>

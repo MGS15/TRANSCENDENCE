@@ -14,7 +14,7 @@ export default function Carousel(){
     setActiveIndex(newIndex);
   };
   return (
-    <div  className="carousel min-[0px]:mx-5 2xl:m-auto flex flex-col justify-center border-solid border-4 border-black max-w-[1536px] shadow-[2px_4px_0px_0px_#000301]">
+    <div  className="Ft carousel min-[0px]:mx-5 2xl:m-auto flex flex-col justify-center border-solid border-4 border-black max-w-[1536px] shadow-[2px_4px_0px_0px_#000301]">
       <div>
         <h1 className="title font-Nova text-center font-bold min-[0px]:text-xl xl:text-2xl text-3xl p-4 border-4 border-solid boder-black m-9 mb-0">ACHIEVEMENTS</h1>
       </div>

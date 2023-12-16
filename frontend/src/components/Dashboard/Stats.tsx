@@ -1,27 +1,24 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import Win from '../../assets/Wins.png'
-import Loss from '../../assets/Loss.png'
-import Draw from '../../assets/Draws.png'
 
 export default function Stats(){
 	const data = [
 		{
 		  name: 'JANUARY',
-		  ' WINS ' : 5,
-		  ' LOSSES ': 3,
-		  ' DRAWS ': 2,
+		  ' WINS ' : 15,
+		  ' LOSSES ': 33,
+		  ' DRAWS ': 62,
 		},
 		{
 		  name: 'FEBRUARY',
-		  ' WINS ' : 15,
-		  ' LOSSES ': 6,
-		  ' DRAWS ': 7,
+		  ' WINS ' : 35,
+		  ' LOSSES ': 12,
+		  ' DRAWS ': 46,
 		},
 		{
 		  name: 'MARCH',
-		  ' WINS ' : 5,
-		  ' LOSSES ': 7,
-		  ' DRAWS ': 5,
+		  ' WINS ' : 75,
+		  ' LOSSES ': 37,
+		  ' DRAWS ': 25,
 		},
 		{
 		  name: 'APRIL',
@@ -79,7 +76,8 @@ export default function Stats(){
 		}
 	];
 	return (
-		<div className="max-w-[1536px] min-[0px]:pr-12 min-[0px]:py-12 2xl:px-[110px] 2xl:py-12 h-[600px] m-auto border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301] min-[0px]:mx-5 2xl:m-auto">
+		<div className="max-w-[1536px] min-[0px]:pr-12 min-[0px]:py-12 2xl:px-[110px] 2xl:py-12 h-[600px] m-auto \
+				border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301] min-[0px]:mx-5 2xl:m-auto Ft">
 			<ResponsiveContainer >
 				<LineChart 
 				data={data}

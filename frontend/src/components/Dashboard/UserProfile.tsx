@@ -6,7 +6,7 @@ import Profil from '../../assets/profile.png'
 
 export default function ProfileDiv(props: any){
 	return (
-		<div className='ProfileDiv min-[0px]:mx-5 2xl:m-auto max-w-[1536px] flex min-[0px]:flex-col-reverse sm:flex-col-reverse md:flex-col-reverse lg:flex-row justify-content-evenly border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301] p-10'>
+		<div className='ProfileDiv Ft min-[0px]:mx-5 2xl:m-auto max-w-[1536px] flex min-[0px]:flex-col-reverse sm:flex-col-reverse md:flex-col-reverse lg:flex-row justify-content-evenly border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301] p-10'>
 		  <div className='LeftDiv flex flex-col lg:w-[75%]'>
 		  <h1 className='ModUserName min-[0px]:text-xl md:text-3xl font-bold font-Nova'>{props.Username}</h1>
 		   <div className='SocialHolder flex min-[0px]:flex-col sm:flex-col md:flex-row lg:flex-row sm:gap-y-2 justify-content-center w-[40%]'>

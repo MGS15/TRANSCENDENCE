@@ -60,7 +60,7 @@ const Navbar = ({isLogged}: {isLogged: Boolean}) => {
 	return (
 		<div className={`
 			container relative p-3 top-5 flex justify-between items-center border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301]
-			max-w-[1536px] min-[0px]:mx-5 2xl:mx-auto 
+			max-w-[1536px] min-[0px]:mx-5 2xl:mx-auto mb-12
 		`}>
 			<a href="/" className={`
 				font-bold text-primary uppercase font-pixelify md:text-3xl text-xl animate-pulse ml-4
