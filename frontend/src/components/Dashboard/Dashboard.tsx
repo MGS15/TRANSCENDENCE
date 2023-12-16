@@ -3,7 +3,8 @@ import Footer from "../Footer";
 import ProfileDiv from "./UserProfile";
 import Carousel from "./Carousel/Carousel";
 import Stats from "../Dashboard/Stats";
-import HomePage from "../HomePage/HomePage";
+import Ladder from './Ladder/LeaderBoard'
+import contestants from './Ladder/LeaderBoard'
 
 export default function  Dashboard(){
 	return (
@@ -12,6 +13,7 @@ export default function  Dashboard(){
 			<ProfileDiv Username="AYMANE" nickname="BASILISK" State="Online"/>
 			<Carousel/>
 			<Stats/>
+			<Ladder contestants={contestants}/>
 			<Footer/>
 		</div>
 	);
