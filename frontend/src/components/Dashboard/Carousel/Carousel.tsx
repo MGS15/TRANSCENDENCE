@@ -7,8 +7,8 @@ export default function Carousel(){
   
   const updateIndex = (newIndex: any) => {
     if (newIndex < 0) {
-      newIndex = items.length - 1;
-    } else if (newIndex > items.length - 1) {
+      newIndex = 7;
+    } else if (newIndex > 7) {
       newIndex = 0;
     }
     setActiveIndex(newIndex);
