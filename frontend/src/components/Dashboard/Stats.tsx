@@ -76,22 +76,24 @@ export default function Stats(){
 		}
 	];
 	return (
-		<div className="max-w-[1536px] min-[0px]:pr-12 min-[0px]:py-12 2xl:px-[110px] 2xl:py-12 h-[600px] m-auto \
-				border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301] min-[0px]:mx-5 2xl:m-auto Ft">
-			<ResponsiveContainer >
-				<LineChart 
-				data={data}
-				>
-					<CartesianGrid strokeDasharray="3 3" />
-					<XAxis dataKey="name" type="category" width={4} padding="gap"/>
-					<YAxis type="number"/>
-					<Tooltip />
-					<Legend iconType='rect' iconSize={15} height={8}/>
-					<Line dataKey=" WINS " stroke="#24BEC8" strokeWidth={5}/>
-					<Line dataKey=" LOSSES " stroke="#F18DB3"strokeWidth={5}/>
-					<Line dataKey=" DRAWS " stroke="#0076C0"strokeWidth={5}/>
-				</LineChart >
-				</ResponsiveContainer>
+		<div className="min-[0px]:mx-5 2xl:m-auto flex flex-col justify-center border-solid border-4 h-[850px] border-black max-w-[1536px] shadow-[2px_4px_0px_0px_#000301] p-20 pt-20 Ft gap-y-12">
+				<h1 className='text-center min-[0px]:text-xl xl:text-2xl text-3xl font-Nova font-bold ring-black ring-4 min-[0px]:mx-5 2xl:m-auto p-6 w-full mt-0'>PONG STATS</h1>
+				<div className='ring-black ring-4 min-[0px]:pr-8 min-[0px]:pl-0 2xl:pr-24 2xl:p-14 h-full min-[0px]:mx-5 2xl:m-auto max-w-[1536px] w-full p-12'>
+					<ResponsiveContainer >
+						<LineChart 
+						data={data}
+						>
+							<CartesianGrid strokeDasharray="3 3" />
+							<XAxis dataKey="name" type="category" width={4} padding="gap"/>
+							<YAxis type="number"/>
+							<Tooltip />
+							<Legend iconType='rect' iconSize={15} height={8}/>
+							<Line dataKey=" WINS " stroke="#24BEC8" strokeWidth={5}/>
+							<Line dataKey=" LOSSES " stroke="#F18DB3"strokeWidth={5}/>
+							<Line dataKey=" DRAWS " stroke="#0076C0"strokeWidth={5}/>
+						</LineChart >
+					</ResponsiveContainer>
+				</div>
 		</div>
 	);
 }
