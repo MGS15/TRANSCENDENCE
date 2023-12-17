@@ -45,6 +45,16 @@ body {
 	cursor: grabbing;
 }
 
+.FF:hover{
+	-webkit-transform: scale(1.5);
+	transform: scale(1.05);
+	transition: 0.5s ease-in-out;
+}
+
+.FF{
+	animation: floating 6s infinite;
+}
+
 .Member:hover{
 	-webkit-transform: scale(1.1);
 	transform: scale(1.02);
