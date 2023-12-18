@@ -22,8 +22,8 @@ export default function ProfileDiv(props: any){
 			</div>
 			<div className='flex flex-col mt-2 box-border'>
 			  <p className='UserStatus text-xl mt-2 mr-4 '>{props.State}</p>
-			  <p className='UserDescription  min-[0px]:mt-3 mr-4 sm:mt-3 md:mt-4 min-[0px]:text-xl md:text-2xl'>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ante est, pulvinar ut elementum ut, venenatis vitae ante. Maecenas ac sodales est, eu ullamcorper nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat volutpat.
+			  <p className='UserDescription  min-[0px]:mt-3 mr-4 sm:mt-3 md:mt-4 min-[0px]:text-xl md:text-lg'>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ante est, pulvinar ut elementu2xm ut, venenatis vitae ante. Maecenas ac sodales est, eu ullamcorper nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat volutpat.
 			  </p>
 			</div>
 			</div>

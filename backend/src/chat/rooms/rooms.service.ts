@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { participation_type, permission } from "@prisma/client";
-import { roomEntity } from "Dto/chat.dto";
+import { invitetype, user_permission, roomtype, actionstatus } from "@prisma/client";
+import { createHash } from "crypto";
+import { RoomDto } from "../../Dto/rooms.dto";
 
 @Injectable()
 export class RoomsService {
@@ -9,29 +10,28 @@ export class RoomsService {
 
 	/**
 	 *
+	 * this one will be called on every friend request accept
 	 * @param creator the initiator of the chat
 	 * @param reciever the second one in the chat
 	 * @returns return 200 if success 400 on failure
 	 */
 	async create_chat(creator: number, reciever: number) {
-		if (reciever <= 0 || Number.isNaN(reciever))
-			throw new HttpException("member not recieved", HttpStatus.BAD_REQUEST);
 		try {
 			const re = await this.prisma.$transaction(async (trx) => {
 				const newroom = await trx.rooms.create({
-					data: { roomtypeof: permission.chat },
+					data: { roomtypeof: roomtype.chat },
 				});
 				await trx.rooms_members.createMany({
 					data: [
 						{
 							roomid: newroom.id,
 							userid: creator,
-							permission: participation_type.chat,
+							permission: user_permission.chat,
 						},
 						{
 							roomid: newroom.id,
 							userid: reciever,
-							permission: participation_type.chat,
+							permission: user_permission.chat,
 						},
 					],
 				});
@@ -48,31 +48,83 @@ export class RoomsService {
 	 * @param room roomEntity {type, password, name}, rontains the data for the room to be created
 	 * @returns on succes it returns a json to the client on failure it retruns BAD_REQUEST
 	 */
-	async create_room(Requester: number, room: roomEntity) {
-		if (room.name.length <= 0) throw new HttpException("name must be bigger than 5", HttpStatus.BAD_REQUEST);
+	async create_room(Requester: number, Room: RoomDto) {
+		if (Room.type === roomtype.chat) throw new HttpException("Action Not Allowed", HttpStatus.BAD_GATEWAY);
+		if (Room.type === roomtype.protected && Room.password.length < 9)
+			throw new HttpException("please provide a better password", HttpStatus.BAD_REQUEST);
+		if (Room.type !== roomtype.protected) Room.password = "";
+		if (Room.type === roomtype.protected) Room.password = createHash("sha256").update(Room.password).digest("hex");
 
 		try {
 			const result = await this.prisma.$transaction(async (trx) => {
 				const newroom = await trx.rooms.create({
 					data: {
-						name: room.name,
-						roompassword: room.password,
-						roomtypeof: room.type,
+						name: Room.name,
+						roompassword: Room.password,
+						roomtypeof: Room.type,
+					},
+					select: {
+						id: true,
+						name: true,
+						roomtypeof: true,
+						updated_at: true,
 					},
 				});
-				await trx.rooms_members.create({
+				const user = await trx.rooms_members.create({
 					data: {
 						roomid: newroom.id,
 						userid: Requester,
-						permission: participation_type.owner,
+						permission: user_permission.owner,
+					},
+					select: {
+						id: true,
+						roomid: true,
+						permission: true,
+						isblocked: true,
+						isBanned: true,
+						ismuted: true,
+						created_at: true,
+						user_id: {
+							select: {
+								id: true,
+								nickname: true,
+								avatar: true,
+							},
+						},
 					},
 				});
+
+				newroom["rooms_members"] = new Array(1).fill(user);
 				return newroom;
 			});
-			return result;
+			return { region: "room", action: "new", data: result };
 		} catch (e) {
 			throw new HttpException("Transaction Failed", HttpStatus.BAD_REQUEST);
 		}
+	}
+	/**
+	 *
+	 */
+	async modify_room(Requester: number, room: number, Room: RoomDto) {
+		if (Room.type === roomtype.chat) throw new HttpException("Action Not Allowed", HttpStatus.BAD_GATEWAY);
+		if (Room.type === roomtype.protected && Room.password.length < 9)
+			throw new HttpException("please provide a better password", HttpStatus.BAD_REQUEST);
+		if (Room.type !== roomtype.protected) Room.password = "";
+		if (Room.type === roomtype.protected) Room.password = createHash("sha256").update(Room.password).digest("hex");
+
+		try {
+			await this.prisma.rooms.update({
+				where: { id: room },
+				data: {
+					name: Room.name,
+					roomtypeof: Room.type,
+					roompassword: Room.password,
+				},
+			});
+		} catch (e) {
+			throw new HttpException("failed to modify room", HttpStatus.BAD_REQUEST);
+		}
+		throw new HttpException(`Room: ${Room.name} modified`, HttpStatus.OK);
 	}
 
 	/**
@@ -83,18 +135,13 @@ export class RoomsService {
 	 * @returns on succes it returns a json to the client on failure it retruns BAD_REQUEST
 	 * @returns
 	 */
-	async delete_room(Requester: number, room: number) {
-		const data = await this.prisma.rooms_members.findFirst({
-			where: {
-				roomid: room,
-				userid: Requester,
-			},
-		});
-		if (data === null) throw new HttpException("No such Entry", HttpStatus.BAD_REQUEST);
-		if (data.permission === participation_type.admin || data.permission === participation_type.participation)
-			throw new HttpException("User is not an owner", HttpStatus.UNAUTHORIZED);
-		const result = this.prisma.rooms.delete({ where: { id: room } });
-		return result;
+	async delete_room(room: number) {
+		try {
+			const result = await this.prisma.rooms.delete({ where: { id: room } });
+			 return { region: "room", action: "delete", data: result };
+		} catch {
+			throw new HttpException("Room: delete unsucsessfull", HttpStatus.NOT_FOUND);
+		}
 	}
 	/**
 	 *
@@ -103,28 +150,27 @@ export class RoomsService {
 	 * @param roomid
 	 * @returns
 	 */
-	async join_room(Requester: number, room: roomEntity, roomid: number) {
+	async join_room(Requester: number, room: number, Room: RoomDto) {
 		const validate = await this.prisma.rooms.findUnique({
-			where: { id: roomid },
+			where: { id: room },
 		});
-		if (!validate) throw new HttpException("No such Entry", HttpStatus.BAD_REQUEST);
-		if (room.type != validate.roomtypeof) throw new HttpException("Nchaelah brabi", 999);
-		if (room.type !== permission.protected && room.password.length)
-			throw new HttpException("room Doesnt support password", HttpStatus.FORBIDDEN);
-		if (room.password != validate.roompassword)
-			throw new HttpException("passsword incorrect", HttpStatus.BAD_REQUEST);
+		if (validate.roomtypeof !== Room.type)
+			throw new HttpException("Nigga  one migga two nigga three", HttpStatus.UNAUTHORIZED);
+		if (Room.type === roomtype.protected && Room.password.length > 9)
+			Room.password = createHash("sha256").update(Room.password).digest("hex");
+		if (Room.type === roomtype.public) Room.password = "";
+		if (Room.password !== validate.roompassword) throw new HttpException("Wrong Password", HttpStatus.UNAUTHORIZED);
 		try {
 			await this.prisma.rooms_members.create({
 				data: {
-					roomid: roomid,
+					roomid: room,
 					userid: Requester,
-					permission: participation_type.participation,
+					permission: user_permission.participation,
 				},
 			});
 		} catch (e) {
 			throw new HttpException("database error", 400);
 		}
-		return "";
 	}
 	/**
 	 *
@@ -133,15 +179,8 @@ export class RoomsService {
 	 * @returns
 	 */
 	async leave_room(Requester: number, room: number) {
-		const membership = await this.prisma.rooms_members.findFirst({
-			where: { AND: [{ roomid: room }, { userid: Requester }] },
-		});
-		if (!membership) throw new HttpException("User not in room", 404);
-		if (membership.permission === participation_type.owner) return await this.delete_room(Requester, room);
-		if (membership.permission === participation_type.chat)
-			throw new HttpException("not Authorized", HttpStatus.UNAUTHORIZED);
 		try {
-			const change = await this.prisma.rooms_members.delete({
+			await this.prisma.rooms_members.delete({
 				where: {
 					combination: {
 						roomid: room,
@@ -150,9 +189,235 @@ export class RoomsService {
 				},
 			});
 		} catch (e) {
-			throw new HttpException(e.code, 400);
+			throw new HttpException("Error Leaving Room", 400);
 		}
-		return "";
+		throw new HttpException("User left Room", 400);
+	}
+
+	/**
+	 *
+	 */
+
+	async invite_room(Requester: number, affected: number, room: number) {
+		const member = await this.prisma.rooms_members.findUnique({
+			where: {
+				combination: {
+					roomid: room,
+					userid: affected,
+				},
+			},
+		});
+		if (member) throw new HttpException("User already exist", 404);
+		try {
+			this.prisma.invites.create({
+				data: {
+					issuer: Requester,
+					reciever: affected,
+					room: room,
+					type: invitetype.Room,
+					status: actionstatus.pending,
+				},
+			});
+		} catch (error) {}
+	}
+
+	/**
+	 *
+	 * @param Requester
+	 * @param targeted
+	 * @param roomtarget
+	 * @returns
+	 */
+	async block_user(user: number, targeted: number, roomtarget: number) {
+		try {
+			const data = await this.prisma.$transaction(async (trx) => {
+				const data = await trx.rooms_members.update({
+					where: {
+						combination: {
+							roomid: roomtarget,
+							userid: targeted,
+						},
+					},
+					data: {
+						isblocked: true,
+					},
+				});
+				await trx.blocked.create({
+					data: {
+						initiator: user,
+						reciever: targeted,
+					},
+				});
+				return data;
+			});
+			return { region: "chat", action: "norm", data: data };
+		} catch {
+			throw new HttpException("Block: Unsuccesfull", HttpStatus.NOT_FOUND);
+		}
+	}
+	/**
+	 *
+	 * @param Requester
+	 * @param targeted
+	 * @param roomtarget
+	 */
+	async unblock_user(user: number, targeted: number, roomtarget: number) {
+		try {
+			const data = await this.prisma.$transaction(async (trx) => {
+				const data = await trx.rooms_members.update({
+					where: {
+						combination: {
+							roomid: roomtarget,
+							userid: targeted,
+						},
+					},
+					data: {
+						isblocked: false,
+					},
+				});
+				const entry = await trx.blocked.deleteMany({
+					where: {
+						initiator: user,
+						reciever: targeted,
+					},
+				});
+				return data;
+			});
+			return { region: "chat", action: "norm", data: data };
+		} catch {
+			throw new HttpException("unBlock: unsucessfull", HttpStatus.NOT_FOUND);
+		}
+	}
+	/**
+	 *
+	 */
+
+	async kick_room(user: number, room: number) {
+		try {
+			const change = await this.prisma.rooms_members.delete({
+				where: {
+					combination: {
+						roomid: room,
+						userid: user,
+					},
+					AND: {
+						permission: {
+							not: "owner",
+						},
+					},
+				},
+			});
+			return { region: "chat", action: "kick", data: change };
+		} catch (e) {
+			throw new HttpException("kick: unsucessfull", 400);
+		}
+	}
+	/**
+	 *
+	 * @param targeted
+	 * @param room
+	 * @returns
+	 */
+	async mute_user(targeted: number, room: number) {
+		try {
+			const data = await this.prisma.rooms_members.update({
+				where: {
+					combination: {
+						roomid: room,
+						userid: targeted,
+					},
+					AND: {
+						permission: user_permission.participation,
+					},
+				},
+				data: {
+					ismuted: true,
+				},
+			});
+			return { region: "chat", action: "norm", data: data };
+		} catch (e) {
+			throw new HttpException("Mute: unsucesfull (owner and admins can't be muted OR user not in room)", 500);
+		}
+	}
+	/**
+	 *
+	 * @param Requester
+	 * @param targeted
+	 * @param roomtarget
+	 */
+	async unmute_user(targeted: number, roomtarget: number) {
+		try {
+			const data = await this.prisma.rooms_members.update({
+				where: {
+					combination: {
+						roomid: roomtarget,
+						userid: targeted,
+					},
+					AND: {
+						permission: user_permission.participation,
+					},
+				},
+				data: {
+					ismuted: false,
+				},
+			});
+			return { region: "chat", action: "norm", data: data };
+		} catch {
+			throw new HttpException("Mute: unsucesfull", 500);
+		}
+	}
+	/**
+	 *
+	 * @param targeted
+	 * @param room
+	 */
+	async ban_user(targeted: number, room: number) {
+		try {
+			const data = await this.prisma.rooms_members.update({
+				where: {
+					combination: {
+						roomid: room,
+						userid: targeted,
+					},
+					AND: {
+						permission: user_permission.participation,
+					},
+				},
+				data: {
+					isBanned: true,
+				},
+			});
+			return { region: "chat", action: "norm", data: data };
+		} catch (e) {
+			throw new HttpException("Ban: unsucesfull (owner and admins can't be banned OR user not in room)", 500);
+		}
+	}
+	/**
+	 *
+	 * @param Requester
+	 * @param targeted
+	 * @param roomtarget
+	 */
+	async unban_user(targeted: number, roomtarget: number) {
+		try {
+			const data = await this.prisma.rooms_members.update({
+				where: {
+					combination: {
+						roomid: roomtarget,
+						userid: targeted,
+					},
+					AND: {
+						permission: user_permission.participation,
+					},
+				},
+				data: {
+					isBanned: false,
+				},
+			});
+			return { region: "chat", action: "norm", data: data };
+		} catch {
+			throw new HttpException("Ban:  unsucesfull", 500);
+		}
 	}
 	/**
 	 *
@@ -161,15 +426,9 @@ export class RoomsService {
 	 * @param user
 	 * @returns
 	 */
-	async give_room_admin(Requester: number, room: number, user: number) {
-		const data = await this.prisma.rooms_members.findFirst({
-			where: { roomid: room, userid: Requester },
-		});
-		console.log(data.permission);
-		if (data.permission !== participation_type.owner)
-			throw new HttpException("this action only for room owners", HttpStatus.UNAUTHORIZED);
+	async give_room_admin(room: number, user: number) {
 		try {
-			await this.prisma.rooms_members.update({
+			const data = await this.prisma.rooms_members.update({
 				where: {
 					combination: {
 						roomid: room,
@@ -177,13 +436,15 @@ export class RoomsService {
 					},
 				},
 				data: {
-					permission: participation_type.admin,
+					isBanned: false,
+					ismuted: false,
+					permission: user_permission.admin,
 				},
 			});
+			return { region: "chat", action: "norm", data: data };
 		} catch (e) {
-			throw new HttpException(e.code, 400);
+			throw new HttpException("User: Failiure", 400);
 		}
-		return "ok";
 	}
 	/**
 	 *
@@ -191,17 +452,9 @@ export class RoomsService {
 	 * @param room
 	 * @param user
 	 */
-	async revoke_room_admin(Requester: number, room: number, user: number) {
-		const allowed: participation_type[] = [participation_type.owner, participation_type.admin];
-		const data = await this.prisma.rooms_members.findFirst({
-			where: { roomid: room, userid: Requester },
-		});
-		if (data.permission === participation_type.admin && Requester !== user)
-			throw new HttpException("this action only for room owners", HttpStatus.UNAUTHORIZED);
-		if (!allowed.includes(data.permission))
-			throw new HttpException("this action only for room owners", HttpStatus.UNAUTHORIZED);
+	async revoke_room_admin(room: number, user: number) {
 		try {
-			const entry = await this.prisma.rooms_members.update({
+			const data = await this.prisma.rooms_members.update({
 				where: {
 					combination: {
 						roomid: room,
@@ -209,128 +462,127 @@ export class RoomsService {
 					},
 				},
 				data: {
-					permission: participation_type.participation,
+					permission: user_permission.participation,
 				},
 			});
-			return entry;
+			return { region: "chat", action: "norm", data: data };
 		} catch (e) {
-			throw new HttpException(e.code, 400);
+			throw new HttpException("User: Failiure", 400);
 		}
 	}
-
-	async mute_user(Requester: number, targeted: number, roomtarget: number, timetomute: number) {
-		const membership = await this.prisma.rooms_members.findFirst({
-			where: {
-				AND: [{ roomid: Number(roomtarget) }, { userid: Number(Requester) }],
-			},
-		});
-		if (!membership) throw new HttpException("Resource not found", 404);
-		if (membership.permission === participation_type.participation) throw new HttpException("Unauthorized", 401);
-		const change = this.prisma.rooms_members.update({
-			where: {
-				combination: {
-					roomid: roomtarget,
-					userid: targeted,
-				},
-				AND: {
-					permission: participation_type.participation,
-				},
-			},
-			data: {
-				ismuted: true,
-				muting_period: timetomute,
-				muted_at: new Date(),
-			},
-		});
-		return change;
+	async giveOwnership(owner: number, room: number, user: number) {
+		try {
+			const changes = await this.prisma.$transaction(async (trx) => {
+				const data = await trx.rooms_members.update({
+					where: {
+						combination: {
+							roomid: room,
+							userid: owner,
+						},
+					},
+					data: {
+						permission: user_permission.participation,
+					},
+				});
+				const data2 = await trx.rooms_members.update({
+					where: {
+						combination: {
+							roomid: room,
+							userid: user,
+						},
+					},
+					data: {
+						permission: user_permission.owner,
+					},
+				});
+				return [data, data2];
+			});
+			return { region: "chat", action: "ownership", data: changes };
+		} catch (e) {
+			throw new HttpException("failed to give up ownership", 400);
+		}
 	}
 	/**
-	 *
-	 * @param Requester
-	 * @param targeted
-	 * @param roomtarget
+	 * roomd id:number, issuer: number,affected: number
 	 */
-	async unmute_user(Requester: number, targeted: number, roomtarget: number) {
-		const membership = await this.prisma.rooms_members.findFirst({
-			where: {
-				AND: [{ roomid: Number(roomtarget) }, { userid: Number(Requester) }],
-			},
-		});
-		if (!membership) throw new HttpException("Resource not found", 404);
-		if (membership.permission === participation_type.participation) throw new HttpException("Unauthorized", 401);
-		const change = this.prisma.rooms_members.update({
-			where: {
-				combination: {
-					roomid: roomtarget,
-					userid: targeted,
-				},
-				AND: {
-					permission: participation_type.participation,
-				},
-			},
-			data: {
-				ismuted: false,
-				muting_period: 0,
-				muted_at: new Date(),
-			},
-		});
-		return change;
-	}
-	/**
-	 *
-	 * @param Requester
-	 * @param targeted
-	 * @param roomtarget
-	 * @returns
-	 */
-	async block_user(Requester: number, targeted: number, roomtarget: number) {
-		const membership = await this.prisma.rooms_members.findFirst({
-			where: {
-				AND: [{ roomid: Number(roomtarget) }, { userid: Number(Requester) }],
-			},
-		});
-		if (!membership) throw new HttpException("Resource not found", 404);
-		if (membership.permission === participation_type.participation) throw new HttpException("Unauthorized", 401);
-		const change = this.prisma.rooms_members.update({
-			where: {
-				combination: {
-					roomid: roomtarget,
-					userid: targeted,
-				},
-			},
-			data: {
-				isblocked: false,
-			},
-		});
-		return change;
-	}
-	/**
-	 *
-	 * @param Requester
-	 * @param targeted
-	 * @param roomtarget
-	 */
-	async unblock_user(Requester: number, targeted: number, roomtarget: number) {
-		const particip: participation_type = participation_type.participation;
-
-		const membership = await this.prisma.rooms_members.findFirst({
-			where: {
-				AND: [{ roomid: Number(roomtarget) }, { userid: Number(Requester) }],
-			},
-		});
-		if (!membership) throw new HttpException("Resource not found", 404);
-		if (membership.permission == particip) throw new HttpException("Unauthorized", 401);
-		const change = this.prisma.rooms_members.update({
-			where: {
-				combination: {
-					roomid: roomtarget,
-					userid: targeted,
-				},
-			},
-			data: {
-				isblocked: true,
-			},
-		});
-		return change;
+	async acceptinviteRoom(inviteid: number) {
+		try {
+			
+			const res = await this.prisma.$transaction(async (trx) => {
+				const data = await trx.invites.findUnique({
+					where: {
+						id: inviteid,
+					},
+				});
+				const changes  = await trx.rooms_members.create({
+					data: {
+						roomid: data.room,
+						userid: data.reciever,
+						permission: user_permission.participation,
+					},
+					select: {
+						rooms: {
+							select: {
+								id: true,
+								name: true,
+								roomtypeof: true,
+								updated_at: true,
+								rooms_members: {
+									select: {
+										id: true,
+										roomid: true,
+										permission: true,
+										isblocked: true,
+										isBanned: true,
+										ismuted: true,
+										created_at: true,
+										user_id: {
+											select: {
+												id: true,
+												nickname: true,
+												avatar: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				});
+				return changes;
+			});
+			return { region: "room", action: "new", data: res };
+		} catch (e) {
+			throw new HttpException("failed to acept invite", HttpStatus.BAD_REQUEST)
+		}
 	}
 }
+
+/**
+ *  	participant
+ * 			for him
+ * 				leave room
+ * 		admin
+ * 			for him
+ * 				leave room
+ * 				revoke admin right
+ * 			for participants
+ * 				kick
+ * 				ban
+ * 				mute
+ * 		owner:
+ * 			for him:
+ * 				nothing
+ * 			for admin
+ * 				revoke admin right
+ * 				give owenership
+ * 			for participation
+ * 				kick
+ * 				ban
+ * 				mute
+ * 				give admin
+ * 				give ownership
+ *
+ *
+ *
+ */

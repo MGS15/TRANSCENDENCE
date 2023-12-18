@@ -8,8 +8,8 @@ import contestants from './Ladder/LeaderBoard'
 
 export default function  Dashboard(){
 	return (
+
 		<div className="flex flex-col gap-y-16" >
-			<Navbar isLogged={true}/>
 			<ProfileDiv Username="AYMANE" nickname="BASILISK" State="Online"/>
 			<Carousel/>
 			<Stats/>

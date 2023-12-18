@@ -7,7 +7,6 @@ import Footer from '../Footer'
 export default function HomePage(props: any){
 	return (
 	<div>
-		<Navbar isLogged={true} />
 		<HomePageDiv/>
 		<Features/>
 		<Team/>
