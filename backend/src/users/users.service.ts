@@ -25,7 +25,7 @@ export class UsersService {
 			nickname:true,
 			avatar:true,
 			status:true,
-		}
+		},
 		})
 		if (!data)
 			throw new HttpException("failed to fetch user", HttpStatus.BAD_REQUEST);
