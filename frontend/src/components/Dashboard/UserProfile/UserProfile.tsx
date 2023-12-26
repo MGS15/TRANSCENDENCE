@@ -1,7 +1,6 @@
 import AddPerson from "../../../assets/AddPerson.png";
 import PersonAdded from "../../../assets/PersonAdded.png";
 import BlockPerson from "../../../assets/BlockPerson.png";
-import ChatLogo from "../../../assets/Bubble.png";
 import Profil from "../../../assets/profile.png";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -78,7 +77,6 @@ export default function ProfileDiv(props: any) {
 						<img src={AddPerson} className="mt-2 mr-4 h-[32px] w-[32px]" alt="..."></img>
 						<img src={PersonAdded} className="mt-2 mr-4 h-[32px] w-[32px]" alt="..."></img>
 						<img src={BlockPerson} className="mt-2 mr-4 h-[32px] w-[32px]" alt="..."></img>
-						<img src={ChatLogo} className="mt-2 mr-4 h-[32px] w-[32px]" alt="..."></img>
 					</div>
 				</div>
 				<div className="flex flex-col mt-2 box-border">

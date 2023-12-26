@@ -7,7 +7,7 @@ export default function History(props:any) {
 				PONG HISTORY
 			</h1>
 			<div className="Ft flex min-[0px]:flex-col border-solid border-4 border-black p-8 bg-[#F6F4F0] shadow-[2px_4px_0px_0px_#000301]">
-				<div className="flex flex-col gap-x-8 overflow-y-auto max-h-[60rem] rr ff gap-y-14">
+				<div className="flex flex-col gap-x-8 overflow-y-auto max-h-[60rem] rr ff gap-y-14 cursor-row-resize">
 					<HistoryMatch player1="aymane" player2="Mgs" one={3} two={3}/>
 					<HistoryMatch player1="Ouail" player2="Taha" one={1} two={3}/>
 					<HistoryMatch player1="7ach7ouch" player2="Jilali" one={6} two={7}/>
