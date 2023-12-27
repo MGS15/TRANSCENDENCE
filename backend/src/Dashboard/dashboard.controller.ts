@@ -17,6 +17,7 @@ export class DashboardController {
 	@Get("getName/:id")
 	async getName(@Param("id") id: number, @Res() res: Response) {
 		try {
+			console.log("inside name getter")
 			const data = await this.service.getName(id);
 			if (!data) return res.status(401).json("user not found");
 			return res.status(200).json(data);
@@ -28,6 +29,7 @@ export class DashboardController {
 	@Patch("statusPost/:id/:status")
 	async handleStatusUpdate(@Param("status") status: string, @Param("id") id: number, @Res() res: Response) {
 		try {
+			console.log("In controller")
 			await this.service.update(id, status);
 			res.status(200).json({message: "user updated succefully", userStatus: status} );
 		} catch (err) {

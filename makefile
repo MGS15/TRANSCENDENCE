@@ -9,7 +9,7 @@ endif
 
 DETACH=d detach
 
-all: build
+all: 
 	docker-compose up --build
 
 ${DETACH}:

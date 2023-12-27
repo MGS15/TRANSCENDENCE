@@ -20,12 +20,11 @@ export default function ProfileDiv(props: any) {
 			});
 			const data = await response.json();
 			if (!response.ok) {
-				console.log(data);
-				alert(data);
+				console.log("in failure", data);
 				throw new Error(`HTTP error! Status: ${response.status}`);
 			}
 			setData(data);
-			console.log(data);
+			console.log("in success", data);
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
@@ -83,7 +82,7 @@ export default function ProfileDiv(props: any) {
 					<p className="UserStatus text-xl mt-2 mr-4 ">{props.State}</p>
 					<textarea
 						className="UserDescription min-[0px]:mt-3 mr-4 sm:mt-3 md:mt-4 min-[0px]:text-base md:text-lg w-[90%] min-h-[5rem] max-h-[12rem] text-[#959490] ring-4 p-3 m-1 border-black ring-black hover:ring-blue shadow-[2px_4px_0px_0px_#000301]"
-						placeholder={!Data ? "" : Data.status}
+						placeholder={!Data ? "Tell Us About Yourself ..." : Data.status}
 						onChange={(e) => setPostContent(e.target.value)}
 					></textarea>
 					<button
