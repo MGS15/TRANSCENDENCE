@@ -11,16 +11,15 @@ model user {
   id                Int             @id @unique @default(autoincrement())
   user42            String          @unique
   nickname          String          @unique
-  avatar            String?
+  avatar            String          @default("https://m.media-amazon.com/images/W/MEDIAX_792452-T2/images/I/71xfa64UP3L.jpg")
   status            String?
   hash              String?
   hashedRt          String?
+  connection_state  current_state   @default(OFFLINE)
   experience_points Int             @default(0)
   created_at        DateTime        @default(now())
   friendship1       friendship[]    @relation("initiator")
   friendship2       friendship[]    @relation("reciever")
-  blocker           blocked[]       @relation("blocker")
-  blocked           blocked[]       @relation("blocked")
   player1           matchhistory[]  @relation("player1")
   player2           matchhistory[]  @relation("player2")
   rooms_members     rooms_members[]
@@ -36,35 +35,27 @@ model level {
 }
 
 model friendship {
-  id           Int      @id @unique @default(autoincrement())
+  id           Int                @id @unique @default(autoincrement())
   initiator    Int
   reciever     Int
-  created_at   DateTime @default(now())
-  initiator_id user     @relation("initiator", fields: [initiator], references: [id])
-  reciever_id  user     @relation("reciever", fields: [reciever], references: [id])
+  status       relationsip_status
+  created_at   DateTime           @default(now())
+  initiator_id user               @relation("initiator", fields: [initiator], references: [id])
+  reciever_id  user               @relation("reciever", fields: [reciever], references: [id])
 
   @@unique([initiator, reciever], name: "friendship")
 }
 
-model blocked {
-  id           Int      @id @unique @default(autoincrement())
-  initiator    Int
-  reciever     Int
-  created_at   DateTime @default(now())
-  initiator_id user     @relation("blocker", fields: [initiator], references: [id])
-  reciever_id  user     @relation("blocked", fields: [reciever], references: [id])
-}
-
 model matchhistory {
-  id         String     @id @unique @default(uuid())
+  id         String     @id @unique
   player1    Int
   player2    Int
   score1     Int        @default(0)
   score2     Int        @default(0)
-  mode       game_modes @default(TIMER_MODE)
-  state      game_state @default(PENDING)
   winner_id  Int        @default(-1)
   loser_id   Int        @default(-1)
+  mode       game_modes @default(EASY)
+  state      game_state @default(PENDING)
   created_at DateTime   @default(now())
   updated_at DateTime   @updatedAt
   player1_id user       @relation("player1", fields: [player1], references: [id])
@@ -84,16 +75,16 @@ model rooms {
 }
 
 model rooms_members {
-  id            Int             @id @unique @default(autoincrement())
-  roomid        Int
-  userid        Int
-  permission    user_permission
-  isblocked     Boolean         @default(false)
-  ismuted       Boolean         @default(false)
-  isBanned      Boolean         @default(false)
-  created_at    DateTime        @default(now())
-  user_id       user            @relation(fields: [userid], references: [id])
-  rooms         rooms           @relation(fields: [roomid], references: [id], onDelete: Cascade)
+  id         Int             @id @unique @default(autoincrement())
+  roomid     Int
+  userid     Int
+  permission user_permission
+  isblocked  Boolean         @default(false)
+  ismuted    Boolean         @default(false)
+  isBanned   Boolean         @default(false)
+  created_at DateTime        @default(now())
+  user_id    user            @relation(fields: [userid], references: [id])
+  rooms      rooms           @relation(fields: [roomid], references: [id], onDelete: Cascade)
 
   @@unique([roomid, userid], name: "combination")
 }
@@ -129,16 +120,17 @@ model achieved {
 }
 
 model invites {
-  id          Int           @id @unique @default(autoincrement())
+  id          Int          @id @unique @default(autoincrement())
   type        invitetype
   status      actionstatus
   issuer      Int
   reciever    Int
   room        Int?
-  created_at  DateTime      @default(now())
-  issuer_id   user          @relation("issuer", fields: [issuer], references: [id])
-  reciever_id user          @relation("reciever", fields: [reciever], references: [id])
-  room_id     rooms?        @relation(fields: [room], references: [id])
+  game_mode   game_modes?  @default(EASY)
+  created_at  DateTime     @default(now())
+  issuer_id   user         @relation("issuer", fields: [issuer], references: [id])
+  reciever_id user         @relation("reciever", fields: [reciever], references: [id])
+  room_id     rooms?       @relation(fields: [room], references: [id])
 }
 
 enum user_permission {
@@ -168,12 +160,25 @@ enum invitetype {
 }
 
 enum game_modes {
-  TIMER_MODE
-  HIGHEST_SCORE_MODE
+  EASY
+  MEDIUM
+  HARD
 }
 
 enum game_state {
   PENDING
   IN_PLAY
   FINISHED
+}
+
+enum current_state {
+  ONLINE
+  OFFLINE
+  IN_GAME
+}
+
+enum relationsip_status {
+  DEFAULT
+  IBLOCKED
+  RBLOCKED
 }

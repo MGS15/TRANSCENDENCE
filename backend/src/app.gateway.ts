@@ -1,101 +1,136 @@
-import {
-	OnModuleDestroy,
-	OnModuleInit,
-	SetMetadata,
-	UseFilters,
-	UseGuards,
-	UsePipes,
-	ValidationPipe,
-} from "@nestjs/common";
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { AtGuard } from './common/guards';
+import { UseGuards } from '@nestjs/common';
+import { GetCurrentUser, GetCurrentUserId } from './common/decorators';
+import { PrismaService } from './prisma/prisma.service';
+import { current_state, relationsip_status } from '@prisma/client';
 import { Server } from "socket.io";
-import { PrismaService } from "src/prisma/prisma.service";
-import { ChatService } from "./chat/chat.service";
-import { ChatSocketDto } from "src/Dto/ChatSocketFormat.dto";
-import { WsValidationExeption } from "src/common/filters/ws.exeption.filter";
-import { WsInRoomGuard } from "src/common/guards/ws.guard";
-import { inRoom } from "src/common/decorators/wsinRoom.decorator";
-import { AdjacencyList } from "./common/classes/adjacent";
-import { subscribe } from "diagnostics_channel";
-import { stat } from "fs";
-import { action, statusDto } from "./Dto/status.dto";
-import { AtGuard } from "./common/guards";
-import { WsSecureguard } from "./common/guards/WsSecureguard.guard";
-import { GetCurrentUserId } from "./common/decorators";
+import { stat } from 'fs';
+import { RoomGuard } from './common/guards/chat/RoomGuards.guard';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { use } from 'passport';
 
-@WebSocketGateway({ transports: ["websocket"] })
-@UsePipes(new ValidationPipe())
-@UseFilters(WsValidationExeption)
-@UseGuards(WsInRoomGuard)
+@WebSocketGateway()
+@UseGuards(RoomGuard)
 @UseGuards(AtGuard)
+export class AppGateway {
 
-export class AppGateway  {
-	constructor(
+  constructor(
 		private readonly prisma: PrismaService,
-		private readonly chat: ChatService,
+		private statusnotify: EventEmitter2
+		
 	) {
 	}
 
+
+
 	@WebSocketServer()
-	server: Server;
-	id: string;
-
-
-	async handleConnection(client ) {
-		
-		
-	}
-	handleDisconnect(client) {
-	}
-
-	@SubscribeMessage("init")
-	async init(@ConnectedSocket() client, @GetCurrentUserId() id:number)
-	{
-		const user_rooms = await this.getRooms(id);
-		for (let i = 0; i < user_rooms.length; i++) {
-			client.join(user_rooms[i].rooms.id.toString());
-		}
-	}
-	@SubscribeMessage("chat")
-	@inRoom()
-	async onMessage(@ConnectedSocket() client, @MessageBody() message: ChatSocketDto, @GetCurrentUserId() id:number) {
-		const res = await this.prisma.$transaction(async (trx) => {
-			const msgid = await trx.messages.create({
-				data: { sender_id: id, room_id: message.Destination, messages: message.Message },
-			});
-			await trx.rooms.update({ where: { id: message.Destination }, data: { updated_at: msgid.created_at } });
-			return await trx.messages.findUnique({
-				where: { id: msgid.id },
-				select: {
-					created_at: true,
-					room_id: true,
-					messages: true,
-					senderid: { select: { id: true, nickname: true, avatar: true } },
-				},
-			});
-		});
-		if (res) this.server.to(message.Destination.toString()).emit("chat", res);
-		else client.emit("ChatError", "error sending message");
+	server :Server;
+ 	async handleConnection(client) {
+		client.emit("HANDSHAKE", "chkon m3aya")
 	}
 	
-	async getRooms(user) {
-		const data = await this.prisma.rooms_members.findMany({
-			where: {
-				userid: user,
-			},
-			select: {
-				rooms: {
-					select: {
-						id: true,
-					},
-				},
-			},
-		});
-		return data;
+	
+	async handleDisconnect(client) {
+		const identifier = client.request.headers["user"]
+		if (identifier === undefined)
+			return ;
+		if (!(await this.server.to(identifier).fetchSockets()).length)
+		{
+			const	state = await this.prisma.user.update({where:{user42:identifier,},data:{connection_state: current_state.OFFLINE}});
+			this.statusnotify.emit("PUSHSTATUS", state.user42 , state.connection_state)
+
+		}
+	}	
+	@SubscribeMessage("HANDSHAKE")
+	async sayHitoserver(@GetCurrentUser("user42") identifier:string, @GetCurrentUser("sub") id:number, @ConnectedSocket() client)
+	{
+		client.join(identifier)
+		if ((await this.server.to(identifier).fetchSockets()).length == 1)
+		{
+			const	state = await this.prisma.user.update({where:{user42:identifier,},data:{connection_state: current_state.ONLINE}});
+			this.statusnotify.emit("PUSHSTATUS", identifier, state.connection_state)
+		}
+		
+	}
+	
+	@OnEvent('PUSHSTATUS')
+	async notifyALL(user: string, status:string)
+	{
+		const friends = await this.getfriends(user);
+		friends.forEach( async (friend) => 
+		{
+			if((await this.server.to(friend).fetchSockets()).length)
+				this.server.to(friend).emit("ACTION" , {region:"ROOM", action: "status", data: {userh:user, status:status}});
+		}
+	);
 	}
 
-	@SubscribeMessage('queueing')
-	 async queueing (@MessageBody() queue: any, @GetCurrentUserId() id: number) {
-		console.log('-> queueing:', queue)
+
+	@OnEvent("PUSH")
+	async informuser(nickname, invite, type)
+	{
+		if ((await this.server.to(nickname).fetchSockets()).length)
+			this.server.to(nickname).emit(type, invite);
 	}
+	async getfriends(user:string)
+	{
+
+		const friends = await this.prisma.friendship.findMany({
+			where	:	{
+				OR :
+				[
+					{
+						initiator_id:{user42:user},
+						status:relationsip_status.DEFAULT,
+					},
+					{
+						reciever_id:{user42:user},
+						status:relationsip_status.DEFAULT,
+					},
+					
+				]
+			},
+			select:
+			{
+				initiator_id:
+				{
+					select:
+					{
+						user42:true,
+					}
+				},
+				reciever_id:
+				{
+					select:
+					{
+						user42:true,
+					}
+				}
+				
+			}
+		});
+		const list = friends.map((frien) =>
+		{
+			if (frien.initiator_id.user42 == user)
+				return frien.reciever_id.user42;
+			return frien.initiator_id.user42
+		})
+		return list;
+	}
+
 }
+
+
+
+/**
+ * 
+ * 	user conects: 
+ * 				->>>>> userstatus set as online
+ * 	user join a game:
+ * 				-> userstatus as in game
+ * 	user leaves a game:
+ * 		->>> user status as offligne;
+ * 
+ * 
+ */

@@ -1,19 +1,21 @@
 import { Module } from "@nestjs/common";
-import { AppGateway } from "./app.gateway";
 import { PrismaModule } from "./prisma/prisma.module";
 import { ChatModule } from "./chat/chat.module";
 import { AuthModule } from "./auth/auth.module";
-import { UsersService } from "./users/users.service";
 import { UsersModule } from "./users/users.module";
 import { AtGuard } from "./common/guards";
 import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
+import { InviteModule } from "./invite/invite.module";
+import { AppGateway } from './app.gateway';
+import {  EventEmitterModule } from "@nestjs/event-emitter";
 import { GameModule } from "./game/game.module";
 
 @Module({
-	imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, ChatModule, AuthModule, UsersModule],
+	imports: [ConfigModule.forRoot({ isGlobal: true }), EventEmitterModule.forRoot() , PrismaModule, GameModule, ChatModule, AuthModule, UsersModule, InviteModule],
 
 	providers: [
+		
 		{
 			provide: APP_GUARD,
 			useClass: AtGuard,
