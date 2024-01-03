@@ -3,20 +3,56 @@ import Footer from "../Footer";
 import ProfileDiv from "./UserProfile/UserProfile";
 import Carousel from "./PongAchievements/Carousel";
 import Stats from "./PongStats/Stats";
-import Ladder from './Ladder/LeaderBoard'
-import contestants from './Ladder/LeaderBoard'
-import History from './matchHistory/matchHistory'
+import Ladder from "./Ladder/LeaderBoard";
+import contestants from "./Ladder/LeaderBoard";
+import History from "./matchHistory/matchHistory";
+import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { currentUser } from "../Context/AuthContext";
+import { use } from "matter-js";
+import { toast } from "react-toastify";
+import { ip } from "../../network/ipaddr";
+import IUser from "../../types/User";
 
-export default function  Dashboard(){
+const useGetUserdata = async (setdashstate: any, nickname: string | undefined) => {
+	try {
+		useEffect(() => {
+			fetch(`http://${ip}3001/profile/${nickname}`, {
+				method: "GET",
+				credentials: "include",
+			})
+				.then((Response) => Response.json())
+				.then((Response) => {
+					if (Response.statusCode >= 400) {
+						toast(`HTTP error! Status: ${Response.status}`);
+						setdashstate(null);
+					} else setdashstate(Response)   ;
+					console.log("in success", Response);
+				});
+		}, []);
+	} catch (error) {
+		console.error("Error fetching data:", error);
+	}
+};
+
+export default function Dashboard() {
+	const user = useContext(currentUser);
+	const [dashstate, setdashstate] = useState<IUser | null>(null);
+	const params = useParams();
+
+	const nickname = params.nickname ? params.nickname : user?.nickname;
+	const who = user?.nickname === nickname;
+	useGetUserdata(setdashstate, nickname);
+	if (dashstate === null || user == undefined) return <>404</>;
+
 	return (
-
-		<div className="flex flex-col gap-y-16 mt-16" >
-			<ProfileDiv Username="User" nickname="Nickname" State="Online"/>
-			<Carousel/>
-			<Stats/>
-			<Ladder contestants={contestants}/>
+		<div className="flex flex-col gap-y-16 mt-16">
+			<ProfileDiv who={who} usr={dashstate} func={setdashstate} />
+			<Carousel />
+			<Stats />
+			<Ladder contestants={contestants} />
 			<History />
-			<Footer/>
+			<Footer />
 		</div>
 	);
-} 
+}
