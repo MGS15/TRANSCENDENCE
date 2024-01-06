@@ -14,6 +14,19 @@ import { toast } from "react-toastify";
 import { ip } from "../../network/ipaddr";
 import IUser from "../../types/User";
 
+const useGetFLadderData = async (setfladder: any, nickname: string | undefined) => {
+	useEffect(() => {
+		fetch(`http://${ip}3001/profile/aechafii/FLadder`, {
+			method: "GET",
+			credentials: "include",
+		})
+			.then((data) => data.json())
+			.then((data) => {
+				setfladder(data);
+			});
+		}, []);
+};
+
 const useGetLadderData = async (setgladder: any, nickname: string | undefined) => {
 	useEffect(() => {
 		fetch(`http://${ip}3001/profile/aechafii/GLadder`, {
@@ -47,20 +60,22 @@ export default function Dashboard() {
 	const user = useContext(currentUser);
 	const [dashstate, setdashstate] = useState<IUser | null>(null);
 	const [gladder, setgladder] =  useState<IUser | null>(null);
+	const [fladder, setfladder] =  useState<IUser | null>(null);
 	const params = useParams();
 
 	const nickname = params.nickname ? params.nickname : user?.nickname;
 	const who = user?.nickname === nickname;
 	useGetUserdata(setdashstate, nickname);
 	useGetLadderData(setgladder, nickname);
-	if (dashstate === null || user == undefined)
+	useGetFLadderData(setfladder, nickname);
+	if (dashstate === null || user == undefined || setfladder === null)
 		return <>404</>;
 	return (
 		<div className="flex flex-col gap-y-16 mt-16">
 			<ProfileDiv who={who} usr={dashstate} func={setdashstate} />
 			<Carousel />
 			<Stats />
-			{who ? <Ladder GLadder={gladder} FLadder={null} /> : null}
+			{who ? <Ladder GLadder={gladder} FLadder={fladder} /> : null}
 			<History />
 			<Footer />
 		</div>

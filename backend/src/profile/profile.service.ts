@@ -6,7 +6,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 @Injectable()
 export class ProfileService {
 	constructor(private readonly prisma: PrismaService) {}
-	
+
 	create(createProfileDto: CreateProfileDto) {
 		return "This action adds a new profile";
 	}
@@ -54,7 +54,7 @@ export class ProfileService {
 		});
 		return update;
 	}
-	
+
 	async getFriendship(id: number, friend: number) {
 		const user = await this.prisma.friendship.findFirst({
 			where: {
@@ -63,7 +63,7 @@ export class ProfileService {
 						initiator: id,
 						reciever: friend,
 					},
-					{ 
+					{
 						initiator: friend,
 						reciever: id,
 					},
@@ -77,39 +77,48 @@ export class ProfileService {
 	async getGlobalBoard(username: string) {
 		const data = await this.prisma.user.findMany({
 			select: {
-				nickname:true,
-				experience_points:true
+				nickname: true,
+				experience_points: true,
+				avatar: true,
 			},
 			orderBy: {
-				experience_points: "desc"
+				experience_points: "desc",
 			},
 		});
-		return data
+		return data;
 	}
-	// async getFriendships(id: number)
-	// {
-	// 	console.log("In here\n");
-	// 	const user = await this.prisma.user.findUnique({
-	// 		where:{
-	// 			id:id
-	// 		},
-	// 		include:{
-	// 			friendship1:true
-	// 		}
-	// 	})
-	// 	const data = [];
-	// 	for (const friend of user.friendship1)
-	// 	{
-	// 		if (user.id === friend.initiator)
-	// 		{
-	// 			const otherUser = await this.getUser(friend.reciever);
-	// 			data.push({
-	// 				avatar:  otherUser.avatar,
-	// 				nickname: otherUser.nickname,
-	// 				status: otherUser.status
-	// 			})
-	// 		}
-	// 	}
-	// 	return data;
-	// }
+	async getFriendships(id: number) {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+			include: {
+				friendship1: true,
+			},
+		});
+		const data = [];
+		for (const friend of user.friendship1) {
+			const theFriend = await this.prisma.user.findUnique({
+				where: {
+					id: friend.reciever,
+				},
+				select: {
+					avatar: true,
+					nickname: true,
+					status: true,
+					experience_points: true,
+				},
+			});
+			if (user.id === friend.initiator && friend.status === "DEFAULT" && friend.initiator != friend.reciever) {
+				data.push({
+					avatar: theFriend.avatar,
+					nickname: theFriend.nickname,
+					status: theFriend.status,
+					experience_points: theFriend.experience_points,
+				});
+			}
+		}
+		const sorted = data.slice().sort((a, b) => b.experience_points - a.experience_points);
+		return sorted;
+	}
 }

@@ -7,8 +7,8 @@ export default function Contestant(props: any) {
 			<div className=" justify-between w-[30%] hidden sm:flex">
 				<img src={Rank} className="PositionLogo  my-2 mr-0 w-[25%] lg:w-[25%] ml-8"></img>
 				<img
-					src={Profil}
-					className="Profil ml-6 w-[35%] lg:w-[30%] hidden sm:block border-2 border-solid border-black lg:ml-1 shadow-[2px_4px_0px_0px_#000301]"
+					src={props.pic}
+					className="Profil ml-6 w-[35%] m-[1px] lg:w-[30%] hidden sm:block border-2 border-solid border-black lg:ml-1 shadow-[2px_4px_0px_0px_#000301]"
 				></img>
 			</div>
 			<div className="flex justify-between w-full sm:w-[60%] items-center">

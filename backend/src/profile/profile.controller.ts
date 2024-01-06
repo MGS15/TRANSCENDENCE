@@ -43,9 +43,9 @@ export class ProfileController {
 		return res
 	}
 
-	@Get("FLadder")
+	@Get(":id/FLadder")
 	async getFBoard(@GetCurrentUserId() id: number){
-
+		return await this.profileService.getFriendships(id)
 	}
 	@Get("MatcHistory")
 	async getMatchHistory(@GetCurrentUserId() id: number){
