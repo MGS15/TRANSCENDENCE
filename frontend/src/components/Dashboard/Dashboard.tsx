@@ -14,10 +14,22 @@ import { toast } from "react-toastify";
 import { ip } from "../../network/ipaddr";
 import IUser from "../../types/User";
 
+const useGetLadderData = async (setgladder: any, nickname: string | undefined) => {
+	useEffect(() => {
+		fetch(`http://${ip}3001/profile/aechafii/GLadder`, {
+			method: "GET",
+			credentials: "include",
+		})
+			.then((data) => data.json())
+			.then((data) => {
+				setgladder(data);
+			});
+		}, []);
+};
+
 const useGetUserdata = async (setdashstate: any, nickname: string | undefined) => {
-	try {
 		useEffect(() => {
-			fetch(`http://${ip}3001/profile/${nickname}`, {
+			fetch(`http://${ip}3001/profile/user/${nickname}`, {
 				method: "GET",
 				credentials: "include",
 			})
@@ -26,31 +38,29 @@ const useGetUserdata = async (setdashstate: any, nickname: string | undefined) =
 					if (Response.statusCode >= 400) {
 						toast(`HTTP error! Status: ${Response.status}`);
 						setdashstate(null);
-					} else setdashstate(Response)   ;
-					console.log("in success", Response);
+					} else setdashstate(Response);
 				});
 		}, []);
-	} catch (error) {
-		console.error("Error fetching data:", error);
-	}
 };
 
 export default function Dashboard() {
 	const user = useContext(currentUser);
 	const [dashstate, setdashstate] = useState<IUser | null>(null);
+	const [gladder, setgladder] =  useState<IUser | null>(null);
 	const params = useParams();
 
 	const nickname = params.nickname ? params.nickname : user?.nickname;
 	const who = user?.nickname === nickname;
 	useGetUserdata(setdashstate, nickname);
-	if (dashstate === null || user == undefined) return <>404</>;
-
+	useGetLadderData(setgladder, nickname);
+	if (dashstate === null || user == undefined)
+		return <>404</>;
 	return (
 		<div className="flex flex-col gap-y-16 mt-16">
 			<ProfileDiv who={who} usr={dashstate} func={setdashstate} />
 			<Carousel />
 			<Stats />
-			<Ladder contestants={contestants} />
+			{who ? <Ladder GLadder={gladder} FLadder={null} /> : null}
 			<History />
 			<Footer />
 		</div>

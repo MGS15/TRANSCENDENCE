@@ -1,43 +1,54 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpException, Res } from '@nestjs/common';
-import { ProfileService } from './profile.service';
-import { CreateProfileDto } from './dto/create-profile.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
-import { GetCurrentUser, GetCurrentUserId } from 'src/common/decorators';
-import { AtGuard } from 'src/common/guards';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpException, Res } from "@nestjs/common";
+import { ProfileService } from "./profile.service";
+import { CreateProfileDto } from "./dto/create-profile.dto";
+import { UpdateProfileDto } from "./dto/update-profile.dto";
+import { GetCurrentUser, GetCurrentUserId, Public } from "src/common/decorators";
+import { AtGuard } from "src/common/guards";
 
-@Controller('profile')
-@UseGuards(AtGuard)
+@Controller("profile")
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+	constructor(private readonly profileService: ProfileService) {}
 
-  // @Get('')
-  // async getCurrent(@GetCurrentUser() current_user) {
-  //   console.log('---->', current_user)
-  //   return await this.profileService.findOne(current_user.user42);
-  // }
+	@Get("user/:id")
+	async findOne(@Param("id") id: string) {
+		return await this.profileService.findOne(id);
+	} 
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.profileService.findOne(id);
-  }
-
-  @Get("friendship/:id")
-	async handleGet(@GetCurrentUserId() id:number ,@Param("id") friend: string, @Res() res: Response) {
-    console.log("chi laaba", friend, id)
-		 await this.profileService.getFriendship(id, +friend);
+	@Get("friendship/:id")
+	async handleGet(@GetCurrentUserId() id: number, @Param("id") friend: string, @Res() res: Response) {
+		await this.profileService.getFriendship(id, +friend);
 	}
 
-  @Patch('updateStatus')
-  async update(@GetCurrentUserId() id:number, @Body() updateProfileDto: UpdateProfileDto) {
-    
-    try{
-      return await this.profileService.update(id, updateProfileDto);
-    }catch{
-      throw new HttpException("error updating status", 450)
-    }
-  }
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profileService.remove(+id);
-  }
+	@Patch("updateStatus")
+	async update(@GetCurrentUserId() id: number, @Body() updateProfileDto: UpdateProfileDto) {
+		try {
+			return await this.profileService.update(id, updateProfileDto);
+		} catch {
+			throw new HttpException("error updating status", 450);
+		}
+	}
+
+	@Get("achieved")
+	async getachieved(@GetCurrentUserId() id: number){
+
+	}
+
+	@Get("Stats")
+	async getStats(@GetCurrentUserId() id: number){
+	}
+
+	@Get(":id/GLadder")
+	async getGBoard(nickname:string){
+		const res = await this.profileService.getGlobalBoard(nickname);
+		return res
+	}
+
+	@Get("FLadder")
+	async getFBoard(@GetCurrentUserId() id: number){
+
+	}
+	@Get("MatcHistory")
+	async getMatchHistory(@GetCurrentUserId() id: number){
+
+	}
 }
