@@ -87,38 +87,64 @@ export class ProfileService {
 		});
 		return data;
 	}
+
 	async getFriendships(id: number) {
-		const user = await this.prisma.user.findUnique({
-			where: {
-				id: id,
+		const friendship = (await this.prisma.friendship.findMany({
+			where:{
+				OR:[
+					{
+						initiator: id,
+					},
+					{
+						reciever: id,
+					},
+				]
 			},
-			include: {
-				friendship1: true,
+			select:{
+				
+				initiator_id:
+				{
+					select: {
+						id:true,
+						avatar: true,
+						nickname: true,
+						status: true,
+						experience_points: true,
+					},
+				},
+				reciever_id:{
+					select: {
+						id:true,
+						avatar: true,
+						nickname: true,
+						status: true,
+						experience_points: true,
+					},
+					
+				}
 			},
-		});
-		const data = [];
-		for (const friend of user.friendship1) {
-			const theFriend = await this.prisma.user.findUnique({
-				where: {
-					id: friend.reciever,
-				},
-				select: {
-					avatar: true,
-					nickname: true,
-					status: true,
-					experience_points: true,
-				},
-			});
-			if (user.id === friend.initiator && friend.status === "DEFAULT" && friend.initiator != friend.reciever) {
-				data.push({
-					avatar: theFriend.avatar,
-					nickname: theFriend.nickname,
-					status: theFriend.status,
-					experience_points: theFriend.experience_points,
-				});
-			}
-		}
-		const sorted = data.slice().sort((a, b) => b.experience_points - a.experience_points);
-		return sorted;
+			
+		})).map((friend) => friend.initiator_id.id === id ? friend.reciever_id : friend.initiator_id);
+		
+		const blocked = (await this.prisma.friendship.findMany({
+            where:
+                {
+                    status:{
+                        not: "DEFAULT"
+                    },
+                    OR:[
+                        {
+                            initiator: id,
+                        },
+                        {
+                            reciever: id,
+                        }
+                    ]
+                }
+        })).map((blockrel) => blockrel.initiator === id ? blockrel.reciever : blockrel.initiator)
+		const friends = friendship.filter((us) => !blocked.includes(us.id));
+		console.log(friends)
+
+		return  friends.slice().sort((a, b) => b.experience_points - a.experience_points);
 	}
 }
