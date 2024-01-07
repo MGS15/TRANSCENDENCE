@@ -15,8 +15,7 @@ const useGetFrienshipsStatus = async (setisFriend: any, dashstate: IUser) => {
 			})
 				.then((Response) => Response.json())
 				.then((Response) => {
-					if (Response.statusCode >= 400) {
-						toast(`HTTP error! Status: ${Response.status}`);
+					if (!Response.ok) {
 						setisFriend(false);
 					} else setisFriend(true);
 				});
@@ -41,7 +40,6 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 		});
 
 		const data = await response.json();
-		console.log("data is: ", data);
 		if (!response.ok) {
 			toast.error(data.message);
 		} else {
