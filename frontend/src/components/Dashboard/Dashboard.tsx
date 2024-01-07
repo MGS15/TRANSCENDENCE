@@ -14,9 +14,23 @@ import { toast } from "react-toastify";
 import { ip } from "../../network/ipaddr";
 import IUser from "../../types/User";
 
+const useGetGamingData = async (setgdata: any, nickname: string | undefined) => {
+	useEffect(() => {
+		fetch(`http://${ip}3001/profile/${nickname}/Stats`, {
+			method: "GET",
+			credentials: "include",
+		})
+			.then((data) => data.json())
+			.then((data) => {
+				setgdata(data);
+				console.log(data);
+			});
+		}, []);
+};
+
 const useGetFLadderData = async (setfladder: any, nickname: string | undefined) => {
 	useEffect(() => {
-		fetch(`http://${ip}3001/profile/aechafii/FLadder`, {
+		fetch(`http://${ip}3001/profile/${nickname}/FLadder`, {
 			method: "GET",
 			credentials: "include",
 		})
@@ -29,7 +43,7 @@ const useGetFLadderData = async (setfladder: any, nickname: string | undefined) 
 
 const useGetLadderData = async (setgladder: any, nickname: string | undefined) => {
 	useEffect(() => {
-		fetch(`http://${ip}3001/profile/aechafii/GLadder`, {
+		fetch(`http://${ip}3001/profile/${nickname}/GLadder`, {
 			method: "GET",
 			credentials: "include",
 		})
@@ -61,6 +75,7 @@ export default function Dashboard() {
 	const [dashstate, setdashstate] = useState<IUser | null>(null);
 	const [gladder, setgladder] =  useState<IUser | null>(null);
 	const [fladder, setfladder] =  useState<IUser | null>(null);
+	const [gdata, setgdata] =  useState<IUser | null>(null);
 	const params = useParams();
 
 	const nickname = params.nickname ? params.nickname : user?.nickname;
@@ -68,6 +83,7 @@ export default function Dashboard() {
 	useGetUserdata(setdashstate, nickname);
 	useGetLadderData(setgladder, nickname);
 	useGetFLadderData(setfladder, nickname);
+	useGetGamingData(setgdata, nickname);
 	if (dashstate === null || user == undefined || setfladder === null)
 		return <>404</>;
 	return (
@@ -76,7 +92,7 @@ export default function Dashboard() {
 			<Carousel />
 			<Stats />
 			{who ? <Ladder GLadder={gladder} FLadder={fladder} /> : null}
-			<History />
+			<History History={gdata} />
 			<Footer />
 		</div>
 	);
