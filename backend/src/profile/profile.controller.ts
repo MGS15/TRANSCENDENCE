@@ -12,7 +12,7 @@ export class ProfileController {
 	@Get("user/:id")
 	async findOne(@Param("id") id: string) {
 		return await this.profileService.findOne(id);
-	} 
+	}
 
 	@Get("friendship/:id")
 	async handleGet(@GetCurrentUserId() id: number, @Param("id") friend: string, @Res() res: Response) {
@@ -21,34 +21,30 @@ export class ProfileController {
 
 	@Patch("updateStatus")
 	async update(@GetCurrentUserId() id: number, @Body() updateProfileDto: UpdateProfileDto) {
-		try {
-			return await this.profileService.update(id, updateProfileDto);
-		} catch {
-			throw new HttpException("error updating status", 450);
-		}
+		return await this.profileService.update(id, updateProfileDto);
+	
 	}
 
 	@Get("achieved")
-	async getachieved(@GetCurrentUserId() id: number){
+	async getachieved(@GetCurrentUserId() id: number) {
 
 	}
 
-	@Get("Stats")
-	async getStats(@GetCurrentUserId() id: number){
+	@Get(":id/Stats")
+	async getStats(@GetCurrentUserId() id: number) {
+		return this.profileService.getGamingData(id);
 	}
 
 	@Get(":id/GLadder")
-	async getGBoard(nickname:string){
-		const res = await this.profileService.getGlobalBoard(nickname);
-		return res
+	async getGBoard(nickname: string) {
+		return await this.profileService.getGlobalBoard(nickname);
 	}
 
 	@Get(":id/FLadder")
-	async getFBoard(@GetCurrentUserId() id: number){
-		return await this.profileService.getFriendships(id)
+	async getFBoard(@GetCurrentUserId() id: number) {
+		return await this.profileService.getFriendships(id);
 	}
-	@Get("MatcHistory")
-	async getMatchHistory(@GetCurrentUserId() id: number){
 
-	}
+	@Get("MatcHistory")
+	async getMatchHistory(@GetCurrentUserId() id: number) {}
 }

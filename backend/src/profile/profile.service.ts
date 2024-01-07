@@ -145,7 +145,7 @@ export class ProfileService {
 			select: {
 				id: true,
 				avatar: true,
-				status:true,
+				status: true,
 				nickname: true,
 				experience_points: true,
 			},
@@ -162,9 +162,26 @@ export class ProfileService {
 				id: id,
 			},
 			select: {
-				player1: true,
-				player2: true,
+				nickname: true,
+				avatar: true,
+				player1: {
+					select: {
+						player1: true,
+						player2: true,
+						score1: true,
+						score2: true,
+						winner_id: true,
+						loser_id: true,
+						player2_id: {
+							select: {
+								nickname: true,
+								avatar: true,
+							},
+						},
+					},
+				},
 			},
 		});
+		return data;
 	}
 }
