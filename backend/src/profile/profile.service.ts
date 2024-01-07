@@ -89,62 +89,82 @@ export class ProfileService {
 	}
 
 	async getFriendships(id: number) {
-		const friendship = (await this.prisma.friendship.findMany({
-			where:{
-				OR:[
-					{
-						initiator: id,
+		const friendship = (
+			await this.prisma.friendship.findMany({
+				where: {
+					OR: [
+						{
+							initiator: id,
+						},
+						{
+							reciever: id,
+						},
+					],
+				},
+				select: {
+					initiator_id: {
+						select: {
+							id: true,
+							avatar: true,
+							nickname: true,
+							status: true,
+							experience_points: true,
+						},
 					},
-					{
-						reciever: id,
-					},
-				]
-			},
-			select:{
-				
-				initiator_id:
-				{
-					select: {
-						id:true,
-						avatar: true,
-						nickname: true,
-						status: true,
-						experience_points: true,
+					reciever_id: {
+						select: {
+							id: true,
+							avatar: true,
+							nickname: true,
+							status: true,
+							experience_points: true,
+						},
 					},
 				},
-				reciever_id:{
-					select: {
-						id:true,
-						avatar: true,
-						nickname: true,
-						status: true,
-						experience_points: true,
+			})
+		).map((friend) => (friend.initiator_id.id === id ? friend.reciever_id : friend.initiator_id));
+		const blocked = (
+			await this.prisma.friendship.findMany({
+				where: {
+					status: {
+						not: "DEFAULT",
 					},
-					
-				}
-			},
-			
-		})).map((friend) => friend.initiator_id.id === id ? friend.reciever_id : friend.initiator_id);
-		
-		const blocked = (await this.prisma.friendship.findMany({
-            where:
-                {
-                    status:{
-                        not: "DEFAULT"
-                    },
-                    OR:[
-                        {
-                            initiator: id,
-                        },
-                        {
-                            reciever: id,
-                        }
-                    ]
-                }
-        })).map((blockrel) => blockrel.initiator === id ? blockrel.reciever : blockrel.initiator)
+					OR: [
+						{
+							initiator: id,
+						},
+						{
+							reciever: id,
+						},
+					],
+				},
+			})
+		).map((blockrel) => (blockrel.initiator === id ? blockrel.reciever : blockrel.initiator));
 		const friends = friendship.filter((us) => !blocked.includes(us.id));
-		console.log(friends)
-
-		return  friends.slice().sort((a, b) => b.experience_points - a.experience_points);
+		const user = await this.prisma.user.findFirst({
+			select: {
+				id: true,
+				avatar: true,
+				status:true,
+				nickname: true,
+				experience_points: true,
+			},
+			where: {
+				id: id,
+			},
+		});
+		friends.push(user);
+		return friends.slice().sort((a, b) => b.experience_points - a.experience_points);
+	}
+	async getGamingData(id: number) {
+		const data = await this.prisma.user.findMany({
+			where: {
+				id: id,
+			},
+			select: {
+				player1: true,
+				player2: true,
+			},
+		});
 	}
 }
