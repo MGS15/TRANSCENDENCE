@@ -1,16 +1,22 @@
-import IUser from '../../../types/User';
-import HistoryMatch from '../matchHistory/HistoryComponent'
+import HistoryMatch from "../matchHistory/HistoryComponent";
 
-export default function History({History} : {History: any}) {
+export default function History({ History }: { History: any }) {
 	return (
 		<div className="min-[0px]:mx-5 2xl:m-auto max-w-[1536px] flex min-[0px]:flex-col justify-content-evenly border-solid border-4 border-black 2xl:w-full shadow-[2px_4px_0px_0px_#000301] p-10 gap-y-8">
 			<h1 className="min-[0px]:text-lg xl:text-2xl text-3xl text-center font-Nova font-black mb-1 border-solid border-4 p-6 bg-white shadow-[2px_4px_0px_0px_#000301]">
 				PONG HISTORY
 			</h1>
 			<div className="Ft flex min-[0px]:flex-col border-solid border-4 border-black p-8 shadow-[2px_4px_0px_0px_#000301]">
-				<div className="flex flex-col gap-x-8 overflow-y-auto max-h-[60rem] rr ff gap-y-14 cursor-row-resize">
-					{History[0].player1.map((index: any, i:number) => (
-						<HistoryMatch player1={History[0].nickname} player2={index.player2_id.nickname} one={index.score1} two={index.score2} pic1={History[0].avatar}  pic2={index.player2_id.avatar}/>
+				<div className="flex flex-col gap-x-8 overflow-y-auto max-h-[60rem] rr FF gap-y-14 cursor-row-resize">
+					{History[0].player1.map((index: any) => (
+						<HistoryMatch
+							player1={History[0].nickname}
+							player2={index.player2_id.nickname}
+							one={index.score1}
+							two={index.score2}
+							pic1={History[0].avatar}
+							pic2={index.player2_id.avatar}
+						/>
 					))}
 				</div>
 			</div>

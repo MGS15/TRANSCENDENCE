@@ -1,5 +1,3 @@
-import Profil from "../../../assets/profile.png";
-
 function Score(props: any) {
 	return (
 		<div className="flex sm:justify-center sm:p-6 sm:gap-x-4 align-center justify-items-center min-[0px]:justify-end mr-2 ml-2 sm:mr-0 sm:ml-0">
@@ -12,12 +10,12 @@ function Score(props: any) {
 	);
 }
 
-function Player({ reverse, name, score, pic }: { reverse: boolean; name: string; score: number; pic:string }) {
+function Player({ reverse, name, score, pic }: { reverse: boolean; name: string; score: number; pic: string }) {
 	return (
 		<div
 			className={`flex justify-between ${
 				reverse ? "flex-row-reverse" : "flex-row"
-			} border-2 border-solid border-black md:gap-x-14 sm:p-4 p-2 align-center w-full xl:w-[40%] shadow-[2px_4px_0px_0px_#000301] sm:h-[6.5rem] bg-white`}
+			} border-2 border-solid border-black md:gap-x-14 sm:p-4 p-2 align-center w-full lg:w-[40%] shadow-[2px_4px_0px_0px_#000301] sm:h-[6.5rem] bg-white`}
 		>
 			<img
 				src={pic}
@@ -33,8 +31,8 @@ function Player({ reverse, name, score, pic }: { reverse: boolean; name: string;
 
 export default function HistoryMatch(props: any) {
 	return (
-		<div className="flex justify-evenly flex-col xl:flex-row gap-y-4">
-			<Player reverse={false} name={props.player1} score={props.one} pic={props.pic1}/>
+		<div className="flex justify-evenly flex-col lg:flex-row gap-y-4">
+			<Player reverse={false} name={props.player1} score={props.one} pic={props.pic1} />
 			<Player reverse={true} name={props.player2} score={props.two} pic={props.pic2} />
 		</div>
 	);
