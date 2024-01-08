@@ -27,7 +27,7 @@ export const TeamLinks = [
 		githubLink : "https://github.com/aymane-1",
 		InstagramLink : "https://github.com/MGS15",
 		LinkedinLink : "https://github.com/7ach7ouch101",
-		XLink : "https://x.com/aymane.echafii",
+		XLink : "https://x.com/aymane.echafii", 
 	},
 	{
 		name : "MAHMOUD MEZIANI",

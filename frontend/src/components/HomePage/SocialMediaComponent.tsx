@@ -11,7 +11,7 @@ export default function SocialMedia({TeamLinks} : {TeamLinks : any}){
 	return(
 		<div className='SocialMedia flex gap-3'>
 
-			<a href={TeamLinks[i].githubLink} target="_blank">
+			{/* <a href={TeamLinks[i].githubLink} target="_blank">
 		 		 <img src={GithubLogo} alt='pic'></img>
 			</a>
 			<a href={TeamLinks[i].LinkedinLink} target="_blank">
@@ -22,7 +22,7 @@ export default function SocialMedia({TeamLinks} : {TeamLinks : any}){
 			</a>
 			<a href={TeamLinks[i].XLink} target="_blank">
 				<img src={Xlogo} alt='pic'></img>
-			</a>
+			</a> */}
 		</div>
 	);
 }
