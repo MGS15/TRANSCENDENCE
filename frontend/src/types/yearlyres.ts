@@ -13,6 +13,14 @@ export type Histo = {
 	state: string;
 	created_at: Date;
 };
+
+export type achived = {
+	id?: number;
+	name?: string;
+	description?: string;
+	won_xp?: number;
+	created_at?: string;
+};
 export class state {
 	array;
 	constructor() {
