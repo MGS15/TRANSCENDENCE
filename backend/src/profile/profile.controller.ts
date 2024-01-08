@@ -30,8 +30,8 @@ export class ProfileController {
 
 	}
 
-	@Get(":id/Stats")
-	async getStats(@GetCurrentUserId() id: number) {
+	@Get(":id/GamingHistory")
+	async getData(@GetCurrentUserId() id: number) {
 		return this.profileService.getGamingData(id);
 	}
 
@@ -44,7 +44,4 @@ export class ProfileController {
 	async getFBoard(@GetCurrentUserId() id: number) {
 		return await this.profileService.getFriendships(id);
 	}
-
-	@Get("MatcHistory")
-	async getMatchHistory(@GetCurrentUserId() id: number) {}
 }

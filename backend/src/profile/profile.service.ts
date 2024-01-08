@@ -157,31 +157,50 @@ export class ProfileService {
 		return friends.slice().sort((a, b) => b.experience_points - a.experience_points);
 	}
 	async getGamingData(id: number) {
-		const data = await this.prisma.user.findMany({
-			where: {
-				id: id,
-			},
-			select: {
-				nickname: true,
-				avatar: true,
-				player1: {
-					select: {
-						player1: true,
-						player2: true,
-						score1: true,
-						score2: true,
-						winner_id: true,
-						loser_id: true,
-						player2_id: {
-							select: {
-								nickname: true,
-								avatar: true,
-							},
+		const data = await this.prisma.matchhistory.findMany(
+			{
+				where: {
+					OR:[
+						{
+							player1:id,
 						},
-					},
-				},
+						{
+							player2:id,
+						}
+					]
 			},
-		});
+			select:
+			{
+				player1_id: 
+				{
+					select:
+					{
+						id:true,
+						nickname: true,
+						avatar:true,
+
+					}
+				
+				},
+				player2_id: 
+				{
+					select:
+					{
+						id:true,
+						nickname: true,
+						avatar:true,
+
+					}
+				
+				},
+				winner_id:true,
+				loser_id:true,
+				score1:true,
+				score2: true,
+				created_at:true,
+			}
+		})
+		
 		return data;
 	}
 }
