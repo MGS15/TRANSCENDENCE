@@ -13,12 +13,14 @@ const useGetFrienshipsStatus = async (setisFriend: any, dashstate: IUser) => {
 				method: "GET",
 				credentials: "include",
 			})
-				.then((Response) => Response.json())
 				.then((Response) => {
 					if (!Response.ok) {
 						setisFriend(false);
-					} else setisFriend(true);
-				});
+					} else {
+						setisFriend(true);
+					}
+				})
+				.then((Response) => Response);
 		}, [dashstate]);
 	} catch (error) {
 		console.error("Error fetching data:", error);
@@ -47,12 +49,11 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 			toast("Updated Succefully!");
 		}
 	};
-
 	useGetFrienshipsStatus(setisFriend, usr);
-
+	console.log("IsFriend equals to : ", isFriend);
 	return (
 		<div className="ProfileDiv Ft min-[0px]:mx-5 2xl:m-auto flex min-[0px]:flex-col-reverse lg:flex-row border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301] p-10 2xl:w-full max-w-[1536px]">
-			<div className="LeftDiv flex flex-col lg:w-[75%] justify-between my-2">
+			<div className="LeftDiv flex flex-col lg:w-[75%] justify-between ">
 				<h1 className="ModUserName min-[0px]:text-xl md:text-3xl font-bold font-Nova uppercase">
 					{usr.user42}
 				</h1>
@@ -80,13 +81,13 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 						</div>
 					) : null}
 				</div>
-				<div className="flex flex-col mt-2 box-border">
+				<div className="flex flex-col mt-2">
 					{usr.connection_state == "ONLINE" ? (
 						<p className="UserStatus text-sm sm:text-base lg:text-xl mt-2 mr-4 text-sucessColor font-extrabold font-Nova">
 							{usr.connection_state}
 						</p>
 					) : usr.connection_state == "OFFLINE" ? (
-						<p className="UserStatus text-xl mt-2 mr-4 text-ImperialRed font-extrabold font-Nova">
+						<p className="UserStatus text-xl mt-2 mr-4 text-PersianRed font-extrabold font-Nova">
 							{usr.connection_state}
 						</p>
 					) : (
@@ -109,9 +110,13 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 								submit
 							</button>
 						</div>
-					) : (
-						<p className="min-[0px]:text-base md:text-xl text-[#959490] font-extrabold font-Nova my-8 italic capitalize">
+					) : usr.status ? (
+						<p className="bg-gradient-to-r from-sucessColor via-blue-500 to-green-700 text-transparent bg-clip-text animate-gradient w-[30%] min-[0px]:text-base md:text-[23px] text-[#959490] font-extrabold font-Nova my-8 p-4 italic capitalize border-black border-solid border-2 shadow-[2px_4px_0px_0px_#000301]">
 							{usr.status}
+						</p>
+					) : (
+						<p className="w-[30%] min-[0px]:text-base md:text-[20px] text-[#959490] font-extrabold font-Nova my-8 p-4 italic capitalize border-black border-solid border-2 shadow-[2px_4px_0px_0px_#000301]">
+							No Status set
 						</p>
 					)}
 				</div>
