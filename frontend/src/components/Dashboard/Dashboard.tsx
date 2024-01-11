@@ -66,21 +66,17 @@ const useGetLadderData = async (setgladder: any, nickname: string | undefined) =
 };
 
 const useGetUserdata = async (setdashstate: any, nickname: string | undefined) => {
-	
 	useEffect(() => {
-		
 		fetch(`http://${ip}3001/profile/user/${nickname}`, {
 			method: "GET",
 			credentials: "include",
 		})
 			.then((Response) => Response.json())
 			.then((Response) => {
-
 				if (Response.statusCode >= 400) {
 					toast(`HTTP error! Status: ${Response.status}`);
 					setdashstate(null);
-				}
-				 else setdashstate(Response);
+				} else setdashstate(Response);
 			});
 	}, [nickname]);
 };
@@ -96,16 +92,12 @@ export default function Dashboard() {
 
 	const nickname = params.nickname ? params.nickname : user?.nickname;
 	const who = user?.nickname === nickname;
-	console.log("userrr ", user);
-	console.log("param.nickame ", who);
-	console.log("nickname.nickame ", nickname);
-		useGetUserdata(setdashstate, nickname);
-		useGetLadderData(setgladder, nickname);
-		useGetFLadderData(setfladder, nickname);
-		useGetGamingData(setgdata, nickname);
-		useGetTrophiesData(settrdata, nickname);
+	useGetUserdata(setdashstate, nickname);
+	useGetLadderData(setgladder, nickname);
+	useGetFLadderData(setfladder, nickname);
+	useGetGamingData(setgdata, nickname);
+	useGetTrophiesData(settrdata, nickname);
 
-		
 	if (dashstate === null || user == undefined || setfladder === null) return <>404</>;
 	return (
 		<div className="flex flex-col gap-y-16 mt-16">
