@@ -7,8 +7,8 @@ export default function Global({ Ladder, LadderTitle }: { Ladder: any; LadderTit
 				{LadderTitle}
 			</h1>
 			<div className="rr overflow-y-auto h-[48rem] FF cursor-row-resize">
-				{Ladder.map((index: any) => (
-					<Contestant Name={index?.nickname} score={index?.experience_points} pic={index?.avatar} />
+				{Ladder.map((index: any, i:number) => (
+					<Contestant key={i} Name={index?.nickname} score={index?.experience_points} pic={index?.avatar} />
 				))}
 			</div>
 		</div>

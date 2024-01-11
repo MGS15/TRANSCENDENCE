@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { CarouselItem } from "./CarouselItem";
 import { achivments_images } from "../../../assets/dinamicachievments/achived";
 import { achived } from "../../../types/yearlyres";
@@ -67,10 +67,11 @@ export default function Carousel({ achivments }: { achivments: number[] | null }
 
 					return (
 						<div
+						key={index}
 							className="inline-flex w-full transition-transform delay-150 duration-1000 ease-in-out snap-center"
 							style={{ transform: `translate(-${activeIndex * 100}%)` }}
 						>
-							<CarouselItem hasit={exist} item={item} image={newimages.images[index]} />
+							<CarouselItem  hasit={exist} item={item} image={newimages.images[index]} />
 						</div>
 					);
 				})}
