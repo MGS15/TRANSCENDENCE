@@ -156,6 +156,22 @@ export class ProfileService {
 		friends.push(user);
 		return friends.slice().sort((a, b) => b.experience_points - a.experience_points);
 	}
+
+	async getAchieved(id: number) {
+		const data = await this.prisma.user.findUnique({
+			select:{
+				achieved: {
+					select:{
+						achievementid: true,
+					}
+				}
+			},
+			where : {
+				id : id,
+			}
+		})
+		return data;
+	}
 	async getGamingData(id: number) {
 		const data = await this.prisma.matchhistory.findMany({
 			where: {

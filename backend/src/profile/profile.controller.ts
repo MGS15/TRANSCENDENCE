@@ -26,9 +26,9 @@ export class ProfileController {
 	
 	}
 
-	@Get("achieved")
-	async getachieved(@GetCurrentUserId() id: number) {
-
+	@Get(":id/achieved")
+	async getAchieved(@GetCurrentUserId() id: number) {
+		return this.profileService.getAchieved(id);
 	}
 
 	@Get(":id/GamingHistory")
