@@ -51,6 +51,7 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 	};
 	useGetFrienshipsStatus(setisFriend, usr);
 	console.log("IsFriend equals to : ", isFriend);
+	console.log("State: ", usr.connection_state )
 	return (
 		<div className="ProfileDiv Ft min-[0px]:mx-5 2xl:m-auto flex min-[0px]:flex-col-reverse lg:flex-row border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301] p-10 2xl:w-full max-w-[1536px]">
 			<div className="LeftDiv flex flex-col lg:w-[75%] justify-between ">
@@ -91,7 +92,7 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 							{usr.connection_state}
 						</p>
 					) : (
-						<p className="UserStatus text-xl mt-2 mr-4 text-inGame font-extrabold font-Nova animate-pulse">
+						<p className="UserStatus text-xl mt-2 mr-4 text-InGame font-extrabold font-Nova animate-pulse">
 							{usr.connection_state}
 						</p>
 					)}
@@ -111,7 +112,7 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 							</button>
 						</div>
 					) : usr.status ? (
-						<p className="bg-gradient-to-r from-sucessColor via-blue-500 to-green-700 text-transparent bg-clip-text animate-gradient w-[30%] min-[0px]:text-base md:text-[23px] text-[#959490] font-extrabold font-Nova my-8 p-4 italic capitalize border-black border-solid border-2 shadow-[2px_4px_0px_0px_#000301]">
+						<p className="truncate bg-gradient-to-r from-sucessColor via-blue-500 to-green-700 text-transparent bg-clip-text animate-gradient w-[30%] min-[0px]:text-base md:text-[23px] text-[#959490] font-extrabold font-Nova my-8 p-4 italic capitalize border-black border-solid border-2 shadow-[2px_4px_0px_0px_#000301]">
 							{usr.status}
 						</p>
 					) : (
