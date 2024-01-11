@@ -21,8 +21,7 @@ const useGetTrophiesData = async (settrdata: any, nickname: string | undefined) 
 			.then((data) => data.json())
 			.then((data) => {
 				settrdata(data);
-				console.log(data, "dasdasdas");
-			});
+			}).catch((err => {toast.error("Error getting achievements")}));
 	}, []);
 };
 
@@ -35,7 +34,7 @@ const useGetGamingData = async (setgdata: any, nickname: string | undefined) => 
 			.then((data) => data.json())
 			.then((data) => {
 				setgdata(data);
-			});
+			}).catch((err => {toast.error("Error getting GamingHistory")}));
 	}, []);
 };
 
@@ -48,7 +47,7 @@ const useGetFLadderData = async (setfladder: any, nickname: string | undefined) 
 			.then((data) => data.json())
 			.then((data) => {
 				setfladder(data);
-			});
+			}).catch((err => {toast.error("Error getting Friends Ladder")}));
 	}, []);
 };
 
@@ -61,7 +60,7 @@ const useGetLadderData = async (setgladder: any, nickname: string | undefined) =
 			.then((data) => data.json())
 			.then((data) => {
 				setgladder(data);
-			});
+			}).catch((err => {toast.error("Error getting Global Ladder")}));
 	}, []);
 };
 
