@@ -27,6 +27,8 @@ const useGetFrienshipsStatus = async (setisFriend: any, dashstate: IUser) => {
 		console.error("Error fetching data:", error);
 	}
 };
+
+
 export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUser; func: any }) {
 	const [postContent, setPostContent] = useState("");
 	const [isFriend, setisFriend] = useState<boolean>(false);
@@ -50,6 +52,38 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 			toast("Updated Succefully!");
 		}
 	};
+	const RmFR = () => {
+        fetch(`http://${ip}3001/invite/friend?friend=${usr.id}`, {
+            method: "DELETE",
+            credentials: "include",
+        })
+            .then((data) =>
+			{
+				if (data.status == 200)
+					toast("Deleted Friend uccesfully")
+				else
+					toast.error("failed to delete friend")
+
+			} )
+          
+            .catch(() => toast.error(`search: network error`));
+    };
+const addFR = () => {
+        fetch(`http://${ip}3001/invite/friend?friend=${usr.id}`, {
+            method: "POST",
+            credentials: "include",
+        })
+		.then((data) =>
+		{
+			if (data.status == 200)
+				toast("added Friend uccesfully")
+			else
+				toast.error("failed to add friend")
+
+		} )
+           
+            .catch(() => toast.error(`search: network error`));
+    };
 	useGetFrienshipsStatus(setisFriend, usr);
 	return (
 		<div className="ProfileDiv Ft min-[0px]:mx-5 2xl:m-auto flex min-[0px]:flex-col-reverse lg:flex-row border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301] p-10 2xl:w-full max-w-[1536px]">
@@ -70,12 +104,14 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 									src={BlockPerson}
 									className="mt-2 mr-4 h-[32px] w-[32px]"
 									alt="Blocking a user"
+									onClick={RmFR}
 								></img>
 							) : (
 								<img
 									src={AddPerson}
 									className="mt-2 mr-4 lg:h-[2rem] lg:w-[2rem]"
 									alt="Adding a user"
+									onClick={addFR}
 								></img>
 							)}
 						</div>
@@ -111,7 +147,7 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 							</button>
 						</div>
 					) : usr.status ? (
-						<p className="truncate bg-gradient-to-r from-sucessColor via-blue-500 to-green-700 text-transparent bg-clip-text animate-gradient w-[30%] min-[0px]:text-base md:text-[23px] text-[#959490] font-extrabold font-Nova my-8 p-4 italic capitalize border-black border-solid border-2 shadow-[2px_4px_0px_0px_#000301]">
+						<p className="truncate w-[30%] min-[0px]:text-base md:text-[21px] text-[#959490] font-extrabold font-Nova my-8 p-5 italic capitalize border-black border-solid border-2 shadow-[2px_4px_0px_0px_#000301]">
 							{usr.status}
 						</p>
 					) : (
