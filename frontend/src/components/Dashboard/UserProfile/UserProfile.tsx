@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { ip } from "../../../network/ipaddr";
 import IUser from "../../../types/User";
+import { UploadTest } from "../../UploadComponent";
 
 const useGetFrienshipsStatus = async (setisFriend: any, dashstate: IUser) => {
 	try {
@@ -50,8 +51,6 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 		}
 	};
 	useGetFrienshipsStatus(setisFriend, usr);
-	console.log("IsFriend equals to : ", isFriend);
-	console.log("State: ", usr.connection_state )
 	return (
 		<div className="ProfileDiv Ft min-[0px]:mx-5 2xl:m-auto flex min-[0px]:flex-col-reverse lg:flex-row border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301] p-10 2xl:w-full max-w-[1536px]">
 			<div className="LeftDiv flex flex-col lg:w-[75%] justify-between ">
@@ -123,11 +122,14 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 				</div>
 			</div>
 			<div className="RightDiv flex place-content-start lg:place-content-center w-[90%] lg:w-[40%] lg:m-auto py-6 lg:py-0">
-				<img
-					src={!usr || !usr.avatar ? Profil : usr.avatar}
-					className="border-4 min-[0px]:h-[12rem] lg:h-[14rem] min-[0px]:w-[12rem] lg:w-[14rem] xl:w-[16rem] xl:h-[16rem] border-black border-solid shadow-[2px_4px_0px_0px_#000301]"
-					alt="User profile picture"
-				></img>
+				<div>
+					{who ? <UploadTest /> : null}
+					<img
+						src={!usr || !usr.avatar ? Profil : usr.avatar}
+						className="border-4 min-[0px]:h-[12rem] lg:h-[14rem] min-[0px]:w-[12rem] lg:w-[14rem] xl:w-[16rem] xl:h-[16rem] border-black border-solid shadow-[2px_4px_0px_0px_#000301]"
+						alt="User profile picture"
+					></img>
+				</div>
 			</div>
 		</div>
 	);
