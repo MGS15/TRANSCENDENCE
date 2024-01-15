@@ -22,7 +22,9 @@ module.exports = {
 				'errorColor': "#F18DB3",
 				'BkColor': "#E7E5DF",
 				'DefaultColor': "#F2F2F2",
-				'JacobsBlueColor': "#24BEC8"
+				'JacobsBlueColor': "#24BEC8",
+				'PersianRed': "#D03636",
+				'InGame': "#EBB93B",
 			},
 			boxShadow: {
 				'buttonShadow': '6px 5px 0 0 #000301',
@@ -45,6 +47,11 @@ module.exports = {
 			  },
 			},
 		  },
+		  variants: {
+			extend: {
+				display: ["group-hover"],
+			},
+		},
 	plugins: [
 
 	],

@@ -36,7 +36,7 @@ const PopupSignIn: React.FC<SignInPopupProps> = ({ setPopupSignInVisible, user }
 			console.log(response);
 			if (response.ok) {
 				setPopupSignInVisible(false);
-				navigate("/game");
+				navigate("/");
 				navigate(0);
 			}
 		} catch (error) {

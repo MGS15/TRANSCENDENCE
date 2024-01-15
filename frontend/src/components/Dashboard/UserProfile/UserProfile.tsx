@@ -28,7 +28,6 @@ const useGetFrienshipsStatus = async (setisFriend: any, dashstate: IUser) => {
 	}
 };
 
-
 export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUser; func: any }) {
 	const [postContent, setPostContent] = useState("");
 	const [isFriend, setisFriend] = useState<boolean>(false);
@@ -53,37 +52,29 @@ export default function ProfileDiv({ who, usr, func }: { who: Boolean; usr: IUse
 		}
 	};
 	const RmFR = () => {
-        fetch(`http://${ip}3001/invite/friend?friend=${usr.id}`, {
-            method: "DELETE",
-            credentials: "include",
-        })
-            .then((data) =>
-			{
-				if (data.status == 200)
-					toast("Deleted Friend uccesfully")
-				else
-					toast.error("failed to delete friend")
+		fetch(`http://${ip}3001/invite/friend?friend=${usr.id}`, {
+			method: "DELETE",
+			credentials: "include",
+		})
+			.then((data) => {
+				if (data.status == 200) toast("Deleted Friend uccesfully");
+				else toast.error("failed to delete friend");
+			})
 
-			} )
-          
-            .catch(() => toast.error(`search: network error`));
-    };
-const addFR = () => {
-        fetch(`http://${ip}3001/invite/friend?friend=${usr.id}`, {
-            method: "POST",
-            credentials: "include",
-        })
-		.then((data) =>
-		{
-			if (data.status == 200)
-				toast("added Friend uccesfully")
-			else
-				toast.error("failed to add friend")
+			.catch(() => toast.error(`search: network error`));
+	};
+	const addFR = () => {
+		fetch(`http://${ip}3001/invite/friend?friend=${usr.id}`, {
+			method: "POST",
+			credentials: "include",
+		})
+			.then((data) => {
+				if (data.status == 200) toast("added Friend uccesfully");
+				else toast.error("failed to add friend");
+			})
 
-		} )
-           
-            .catch(() => toast.error(`search: network error`));
-    };
+			.catch(() => toast.error(`search: network error`));
+	};
 	useGetFrienshipsStatus(setisFriend, usr);
 	return (
 		<div className="ProfileDiv Ft min-[0px]:mx-5 2xl:m-auto flex min-[0px]:flex-col-reverse lg:flex-row border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301] p-10 2xl:w-full max-w-[1536px]">

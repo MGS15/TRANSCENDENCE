@@ -96,7 +96,6 @@ export const update = (
                 break ;
             case "status":
                 const {userh, status } = data.data as {userh:string, status:string };
-                console.log ("dsfdsfdsfds")
                 toast( userh + "  " + status);
 
         }
