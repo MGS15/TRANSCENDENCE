@@ -14,14 +14,12 @@ import { RoomGuard } from 'src/common/guards/chat/RoomGuards.guard';
 import { RoomStatus } from 'src/common/decorators/RoomStatus.deorator';
 import { Roomstattypes } from 'src/types.ts/statustype';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { WsValidationExeption } from 'src/common/filters/ws.exeption.filter';
 
 
 @WebSocketGateway({ transports: ["websocket"] })
 @UsePipes(new ValidationPipe())
 @UseGuards(RoomGuard)
 @UseGuards(AtGuard)
-// @UseFilters(WsValidationExeption)
 export class ChatGateway {
   constructor(
 		private readonly prisma: PrismaService,
@@ -31,7 +29,6 @@ export class ChatGateway {
 
 	@WebSocketServer()
 	server: Server;
-	id: string;
 
 
 	
@@ -45,14 +42,12 @@ export class ChatGateway {
 	@RoomStatus(Roomstattypes.NOTBAN, Roomstattypes.NOTBLOCK)
 	async subscribeRoom(@GetCurrentUserId() id:number, @ConnectedSocket() client, @MessageBody() room: {room:number }) {
 		client.join(room.room.toString());
-
 	}
 
 
 
 	@SubscribeMessage("CREATE")
 	async createroom(@GetCurrentUser("user42") identifier:string,@GetCurrentUserId() id:number, @ConnectedSocket() client, @MessageBody() room: RoomDto) {
-		console.log("room")
 		try
 		{
 			const newroom = await this.service.rooms.create_room(id, room);
@@ -73,15 +68,19 @@ export class ChatGateway {
 			if (newroom)
 				{
 					this.server.to(identifier).emit("ACTION", {region: "ROOM", action:"JOIN", data: newroom}) 
+					this.server.to(room.room.toString()).emit("ACTION", {region: "ROOM", action:"JOIN", data: newroom}) 
+
 					this.server.to(room.room.toString()).emit("NOTIFY", ` ${identifier} joined ${newroom.name}`)
 				}
 			else
+			{
 				throw new Error("user probably in room")
-		}	
-		catch (e)
-		{
-			client.emit("CHATerror", e.message);
-		}
+			}
+	}	
+	catch (e)
+	{
+			client.emit("ChatError", e.message);
+	}
 	}	
 
 
@@ -96,7 +95,7 @@ export class ChatGateway {
 		{
 			const newroom = await this.service.rooms.modify_room(id,room.room, room);
 			this.server.to(room.room.toString()).emit("ACTION", {region: "ROOM", action:"MOD", data: newroom}) 
-			this.server.to(room.room.toString()).emit("NOTIFY", `room ${newroom.name} owner changet its permition`)
+			this.server.to(room.room.toString()).emit("NOTIFY", `room ${newroom.name} setting are changed `)
 		}	
 		catch (e)
 		{
@@ -134,8 +133,46 @@ export class ChatGateway {
 			{
 				client.emit("ChatError", "failed to send message");
 				return ;
+		}
+		const blocked = (await this.prisma.friendship.findMany({
+			where:
+				{
+					status:{
+						not: "DEFAULT"
+					},
+					OR:[
+						{
+							initiator: id,
+						},
+						{
+							reciever: id,
+						}
+					]
+				}
+		})).map((blockrel) => blockrel.initiator === id ? blockrel.reciever : blockrel.initiator)
+
+		const memes = (await this.prisma.rooms_members.findMany(
+			{
+				where:{
+					roomid:message.room,
+					isBanned:false,
+				},
+				select:{
+					user_id: {
+						select:{
+							id:true,
+							user42:true,
+						}
+					}
+				}
 			}
-		this.server.to(message.room.toString()).emit("ACTION", {region: "CHAT", action:"NEW", data: res});
+		)).filter((mem) => !blocked.includes(mem.user_id.id))
+
+		memes.map(async (memeber) => {
+			if ((await this.server.to(memeber.user_id.user42).fetchSockets()).length)	
+				this.server.to(memeber.user_id.user42).emit("ACTION", {region: "CHAT", action:"NEW", data: res})
+		})
+	
 	}
 
 
@@ -154,25 +191,34 @@ export class ChatGateway {
 	async block(@GetCurrentUserId() id:number, @ConnectedSocket() client,  @MessageBody() Message: ActionDTO ,@GetCurrentUser("user42") identifier:string) {
 
 		let res;
+		console.log( "bloction", Message)
 		if (Message.What === "BLOCK")
 			res = await this.service.rooms.block_user(id ,Message.target, Message.room);
 		if (Message.What === "UNBLOCK")
 			{
 				res = await this.service.rooms.unblock_user(id ,Message.target, Message.room);
 			}
-		if (typeof res === "string")
-		{
-			this.server.to(identifier).emit("ChatError", res);
-			return
-		}
-		if (!res)
-		{
-			client.emit("ChatError", `failed to ${Message.What}`);
-			return ;
-		}
+			if (typeof res === "string")
+			{
+				this.server.to(identifier).emit("ChatError", res);
+				return
+			}
+			if (!res)
+			{
+				client.emit("ChatError", `failed to ${Message.What}`);
+				return ;
+			}
+			
+		const meindex = (identifier === res[1].user_id.user42) ?  0 : 1;
+		const toindex = (identifier === res[1].user_id.user42) ?  1 : 0;
+		const mesituation = res[0].isblocked ? "BLOCKED" : res[meindex].user_id.connection_state
+		const tosituation = res[0].isblocked ? "BLOCKED" : res[toindex].user_id.connection_state
 
-		this.server.to(Message.room.toString()).emit("ACTION", {region: "ROOM", action:"update" , data: res})
-		this.server.to(Message.room.toString()).emit("NOTIFY", `user: ${res.user_id.nickname} been blocked`)
+		
+		this.server.to(res[meindex].user_id.user42).emit("ON_STATUS",[{"nickname": res[toindex].user_id.nickname , "connection_state": tosituation}])
+		this.server.to(res[toindex].user_id.user42 ).emit("ON_STATUS",[{"nickname": res[meindex].user_id.nickname  , "connection_state": mesituation}])
+		this.server.to(res[meindex].user_id.user42).emit("ACTION", {region: "ROOM", action:"update" , data: res[toindex]})
+		this.server.to(res[toindex].user_id.user42).emit("ACTION", {region: "ROOM", action:"update" , data:  res[meindex]})
 
 	}
 
@@ -190,7 +236,6 @@ export class ChatGateway {
 	@RoomType(roomtype.protected, roomtype.public, roomtype.private)
 	async kick(@GetCurrentUserId() id:number, @GetCurrentUser("user42") identifier:string ,  @ConnectedSocket() client,  @MessageBody() Message: ActionDTO)
 	{
-    // console.log(Message , "ja men bra")
 
 		const res =  await this.service.rooms.kick_room(Message.target, Message.room);
 		if (!res)
@@ -203,9 +248,8 @@ export class ChatGateway {
 		/**
 		 * delete user from th room
 		 */
-		this.server.sockets.adapter.rooms.get(identifier).forEach((client)=> 
-		this.server.sockets.sockets.get(client).leave(Message.room.toString()))
-
+		this.server.sockets.adapter.rooms.get(res.user_id.user42).forEach((client)=> 
+			this.server.sockets.sockets.get(client).leave(Message.room.toString()))
 
 	}
 
@@ -237,7 +281,7 @@ export class ChatGateway {
 			return ;
 		}
 		this.server.to(Message.room.toString()).emit("ACTION", {region: "ROOM", action:"update" , data: res})
-		this.server.to(Message.room.toString()).emit("NOTIFY", ` ${identifier} ${Message.What} ${res.user_id.nickname}`)
+		this.server.to(Message.room.toString()).emit("NOTIFY", ` ${identifier} did  ${Message.What} ${res.user_id.nickname}`)
 		if (Message.What ==="UNBAN")
 			return
 		this.server.sockets.adapter.rooms.get(identifier).forEach((client)=> 
@@ -312,7 +356,7 @@ export class ChatGateway {
 	@RoomType(roomtype.private, roomtype.protected, roomtype.public)
 	async indiwana(@GetCurrentUser("user42") identifier, @GetCurrentUserId() id:number, @ConnectedSocket() client,  @MessageBody() Message: ActionDTO)
 	{
-    // console.log(Message , "ja men bra")
+    console.log(Message , "ja men bra")
 
 		const res = await this.service.rooms.give_room_admin(Message.room, Message.target);
 		if (!res)
@@ -321,13 +365,8 @@ export class ChatGateway {
 			return ;
 		}
 		this.server.to(Message.room.toString()).emit("ACTION", {region: "ROOM", action:"update" , data: res})
-		this.server.to(Message.room.toString()).emit("NOTIFY", ` ${identifier} in a new admin`)
+		this.server.to(Message.room.toString()).emit("NOTIFY", ` ${res.user_id.nickname} in an Admin for ${res.rooms.name}`)
 	}
-
-
-
-
-
 
 
 	@SubscribeMessage("OUTDIWANA")
@@ -335,7 +374,7 @@ export class ChatGateway {
 	@RoomType(roomtype.private, roomtype.protected, roomtype.public)
 	async outdiwana(@GetCurrentUser("user42") identifier, @GetCurrentUserId() id:number, @ConnectedSocket() client,  @MessageBody() Message: ActionDTO)
 	{
-    // console.log(Message , "ja men bra")
+    console.log(Message , "ja men bra")
 
 		const res = await this.service.rooms.revoke_room_admin(Message.room, Message.target);
 		if (!res)
@@ -344,7 +383,7 @@ export class ChatGateway {
 			return ;
 		}
 		this.server.to(Message.room.toString()).emit("ACTION", {region: "ROOM", action:"update" , data: res})
-		this.server.to(Message.room.toString()).emit("NOTIFY", ` ${identifier} removed from admins`)
+		this.server.to(Message.room.toString()).emit("NOTIFY", ` ${identifier}  not an - room  ${res.rooms.name}`)
 
 	}
 
@@ -361,11 +400,9 @@ export class ChatGateway {
 			return ;
 		}
 		this.server.to(Message.room.toString()).emit("ACTION", {region: "ROOM", action:"KICK" , data: res})
-		this.server.to(Message.room.toString()).emit("NOTIFY", ` ${identifier} left the room`)
-		const clients = this.server.sockets.adapter.rooms.get(identifier).forEach((client)=> 
-		
-			this.server.sockets.sockets.get(client).leave(Message.room.toString())
-		)
+		this.server.to(Message.room.toString()).emit("NOTIFY", ` ${identifier} left  ${res.rooms.name}`)
+		this.server.sockets.adapter.rooms.get(identifier).forEach((client)=> 
+			this.server.sockets.sockets.get(client).leave(Message.room.toString()))
 	}
 
   	@SubscribeMessage("DELETE")
@@ -373,7 +410,7 @@ export class ChatGateway {
 	@RoomType(roomtype.private, roomtype.protected, roomtype.public)
 	async deleteroom(@GetCurrentUserId() id:number, @ConnectedSocket() client,  @MessageBody() Message: ActionDTO)
 	{
-    // console.log(Message , "ja men bra")
+    console.log(Message , "ja men bra")
 
 		const res = await this.service.rooms.delete_room(Message.room);
 		if (!res)
@@ -382,6 +419,8 @@ export class ChatGateway {
 			return ;
 		}
 		this.server.to(Message.room.toString()).emit("ACTION", {region: "ROOM", action:"DELETE" , data: res})
+		this.server.to(Message.room.toString()).emit("NOTIFY", `Room: ${res.name} is deleted`)
+
 		this.server.in(Message.room.toString()).socketsLeave(Message.room.toString());
 	}
 
@@ -392,7 +431,7 @@ export class ChatGateway {
 	@RoomStatus(Roomstattypes.NOTBAN)
 	async inviteroom(@GetCurrentUser("user42") identifier, @GetCurrentUserId() id:number, @ConnectedSocket() client,  @MessageBody() Message:ActionDTO )
 	{
-		// console.log(Message)
+		console.log(Message)
 		const friend = await this.prisma.user.findUnique({
 			where:{
 				nickname: Message.What
@@ -419,8 +458,7 @@ export class ChatGateway {
 		}
 		this.server.to(res.reciever_id.user42).emit("INVITES", res)
 		this.server.to(res.issuer_id.user42).emit("INVITES", res)
-
-
+		this.server.to(res.room_id.id.toString()).emit("NOTIFY", `User ${res.issuer_id.nickname} invited ${res.reciever_id.nickname} to room ${res.room_id.name}`)
 		}
 		
 		@SubscribeMessage("ROOMACTION")
@@ -440,7 +478,6 @@ export class ChatGateway {
 			}
 			if (Message.What == "no")
 			{
-				// console.log("said no", res)
 				this.server.to(res.issuer_id.user42).emit("INVITES", res);
 				this.server.to(res.reciever_id.user42).emit("INVITES", res);
 				return 

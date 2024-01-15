@@ -16,6 +16,7 @@ export class ProfileService {
 	}
 
 	async findOne(username: string) {
+		console.log("user",username);
 		const data = await this.prisma.user.findFirst({
 			select: {
 				id: true,
@@ -30,6 +31,7 @@ export class ProfileService {
 				nickname: username,
 			},
 		});
+		console.log("data",data);
 		if (!data) throw new HttpException("failed to fetch user", HttpStatus.BAD_REQUEST);
 		return data;
 	}
@@ -156,57 +158,51 @@ export class ProfileService {
 		friends.push(user);
 		return friends.slice().sort((a, b) => b.experience_points - a.experience_points);
 	}
-
-	async getAchieved(id: number) {
-		const data = await this.prisma.user.findUnique({
-			select:{
-				achieved: {
-					select:{
-						achievementid: true,
-					}
-				}
+	async getGamingData(id: number) {
+		const data = await this.prisma.matchhistory.findMany(
+			{
+				where: {
+					OR:[
+						{
+							player1:id,
+						},
+						{
+							player2:id,
+						}
+					]
 			},
-			where : {
-				id : id,
+			select:
+			{
+				player1_id: 
+				{
+					select:
+					{
+						id:true,
+						nickname: true,
+						avatar:true,
+
+					}
+				
+				},
+				player2_id: 
+				{
+					select:
+					{
+						id:true,
+						nickname: true,
+						avatar:true,
+
+					}
+				
+				},
+				winner_id:true,
+				loser_id:true,
+				score1:true,
+				score2: true,
+				created_at:true,
 			}
 		})
-		return data;
-	}
-	async getGamingData(id: number) {
-		const data = await this.prisma.matchhistory.findMany({
-			where: {
-				OR: [
-					{
-						player1: id,
-					},
-					{
-						player2: id,
-					},
-				],
-			},
-			select: {
-				player1_id: {
-					select: {
-						id: true,
-						nickname: true,
-						avatar: true,
-					},
-				},
-				player2_id: {
-					select: {
-						id: true,
-						nickname: true,
-						avatar: true,
-					},
-				},
-				winner_id: true,
-				loser_id: true,
-				score1: true,
-				score2: true,
-				created_at: true,
-			},
-		});
-
+		
 		return data;
 	}
 }

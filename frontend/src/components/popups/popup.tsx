@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import karontdo from "../../assets/42.png";
-import { AnimatedElement } from "../game/GameSetup";
 
 interface PopupProps {
 	onClose: () => void;
@@ -9,12 +8,13 @@ interface PopupProps {
 	setloginuser: React.Dispatch<React.SetStateAction<string>>;
 }
 
+
 const Popup: React.FC<PopupProps> = ({ onClose, setPopupSignUpVisible, setPopupSignInVisible, setloginuser }) => {
 	const popupWindowRef = useRef<any>(null);
 	const [hasHandledMessage, setHasHandledMessage] = useState(false);
 	useEffect(() => {
 		const handleMessage = (event: any) => {
-			if (event.origin === "http://localhost:3000") {
+			if (event.origin === "http://9alwa.ddns.net:3000") {
 				if (event.data.success) {
 					onClose();
 					console.log(JSON.parse(event.data.payload));
@@ -36,7 +36,7 @@ const Popup: React.FC<PopupProps> = ({ onClose, setPopupSignUpVisible, setPopupS
 	}, []);
 
 	const KarontdoIntra = () => {
-		const oauthUrl = "http://localhost:3001/auth/intra/login";
+		const oauthUrl = "http://9alwa.ddns.net:3001/auth/intra/login";
 		var title = "OAuth Pop-up";
 		var w = 600;
 		var h = 300;
@@ -53,22 +53,23 @@ const Popup: React.FC<PopupProps> = ({ onClose, setPopupSignUpVisible, setPopupS
 		};
 	}, []);
 	return (
-		<div className="fixed z-10 inset-0 	flex items-center justify-center bg-black bg-opacity-50 m-4">
-			<div className="bg-white p-6  font-Nova border-solid border-8 border-black shadow-[2px_4px_0px_0px_#000301]">
-				<div className="b-50 m-32 mx-auto max-w-[1199px] flex justify-evenly">
-					<div className="w-[40%] flex">
-						<AnimatedElement/>
+		<div className="fixed z-10 inset-0  flex items-center justify-center bg-black bg-opacity-50">
+			<div className="bg-DefaultColor p-6 rounded-lg shadow-xl m-[12%] max-sm:max-w-[90%]" >
+				<div className="b-50 m-[11%] mx-auto  max-sm:max-w-[90%] flex">
+					<div className="w-[45%]">
+						<img src={karontdo} className="w-[345px]"></img>
 					</div>
-					<div className="border-solid flex flex-col justify-around text-center gap-y-10 w-[50%]">
-						<p className="font-extrabold text-3xl animate-pulse">Sign in, and let the games begin!</p>
-						<p className="font-bold text-xl ">
+
+					<div className="border-solid flex flex-col justify-center text-center gap-y-10">
+						<p className="font-bold text-3xl">Sign in, and let the games begin!</p>
+						<p className="font-bold text-1xl ">
 							Ping-pong pal! It's been a minute, huh Recall the pixel paddle days? Get ready for a
 							nostalgia wave your fave ping-pong platform beckons!
 						</p>
-						<div className="flex justify-center align-center">
+						<div className=" md:mt-32 flex justify-center align-center">
 							<button
 								onClick={KarontdoIntra}
-								className="flex gap-x-5 border-solid bg-buttonColor text-black py-2 px-40 border-black shadow-[2px_4px_0px_0px_#000301] border-2"
+								className="flex gap-x-5 bg-yellow-500 text-black py-2 md:px-40 max-sm:px-20 rounded-full shadow-2xl"
 							>
 								<img src={karontdo} className="w-[30px]"></img>
 								NETWORK
@@ -76,7 +77,8 @@ const Popup: React.FC<PopupProps> = ({ onClose, setPopupSignUpVisible, setPopupS
 						</div>
 					</div>
 				</div>
-				<button onClick={onClose} className="border-2 border-solid bg-buttonColor text-black py-2 px-5 border-black shadow-[2px_4px_0px_0px_#000301] w-[20%]">
+
+				<button onClick={onClose} className="bg-yellow-500 text-black py-2 px-5 rounded-full shadow-2xl">
 					{" "}
 					Close{" "}
 				</button>

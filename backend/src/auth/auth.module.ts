@@ -9,6 +9,8 @@ import { AtStrategy, RtStrategy } from "./strategy";
 import { PrismaModule } from "src/prisma/prisma.module";
 import { UsersService } from "src/users/users.service";
 import { ItStrategy } from "./strategy/it.strategy";
+import { TwoFactorAuthService } from './two-factor-auth/two-factor-auth.service';
+import { FtStrategy } from "./strategy/tf.strategy";
 
 @Module({
 	imports: [PrismaModule, PassportModule, JwtModule.register({})],
@@ -18,9 +20,11 @@ import { ItStrategy } from "./strategy/it.strategy";
 		AtStrategy,
 		RtStrategy,
 		ItStrategy,
+		FtStrategy,
 		intraStrategy,
 		GoogleAuthenticatorStrategy,
-		UsersService
+		UsersService,
+		TwoFactorAuthService,
 	],
 })
 export class AuthModule {}

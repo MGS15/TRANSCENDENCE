@@ -3,13 +3,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 
 
-const Refreshinterval = () => {
+const useRefreshinterval = () => {
 	const [error, setError] = useState<string | null>(null);
 	const intervalRef = useRef<NodeJS.Timer | undefined>();
 
 	const getToken = useCallback(() => {
 		axios
-			.post("http://localhost:3001/auth/refresh", {}, { withCredentials: true })
+			.post("http://9alwa.ddns.net:3001/auth/refresh", {}, { withCredentials: true })
 			.then((res) => {
 				console.log(res);
 				console.log(res.data);
@@ -24,6 +24,7 @@ const Refreshinterval = () => {
 		getToken();
 		const interval = setInterval(() => getToken(), 14 * 60 * 1000);
 		intervalRef.current = interval;
+		
 
 		return () => clearInterval(interval);
 	}, [getToken]);
@@ -35,7 +36,6 @@ const Refreshinterval = () => {
 		}
 	}, [error]);
 
-	return <></>;
 };
 
-export default Refreshinterval;
+export default useRefreshinterval;
