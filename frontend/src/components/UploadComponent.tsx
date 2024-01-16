@@ -45,7 +45,7 @@ export const UploadTest = () => {
 			<label className="absolute w-[5%] h-[4%] cursor-pointer">
 				<input type="file" className="hidden" onChange={handleFileChange} />
 				<svg
-						className="absolute sm:ml-4 m-1 sm:m-2 p-1 w-[30px] sm:w-[2rem] sm:h-[2rem] md:w-[3rem] md:h-[3rem]"
+						className="absolute sm:ml-4 mx-[4px] sm:m-2 p-1 w-[30px] sm:w-[2rem] sm:h-[2rem] md:w-[3rem] md:h-[3rem]"
 						width=""
 						height=""
 						viewBox="0 0 22 20"
