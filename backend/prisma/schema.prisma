@@ -1,0 +1,187 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id                Int             @id @unique @default(autoincrement())
+  user42            String          @unique
+  nickname          String          @unique
+  avatar            String          @default("https://m.media-amazon.com/images/W/MEDIAX_792452-T2/images/I/71xfa64UP3L.jpg")
+  status            String?
+  hash              String?
+  hashedRt          String?
+  connection_state  current_state   @default(OFFLINE)
+  experience_points Int             @default(0)
+  created_at        DateTime        @default(now())
+  is2FA             Boolean         @default(false)
+  secret2FA         String?
+  achieved          achieved[]
+  friendship1       friendship[]    @relation("initiator")
+  friendship2       friendship[]    @relation("reciever")
+  issuer            invites[]       @relation("issuer")
+  reciever          invites[]       @relation("reciever")
+  player1           matchhistory[]  @relation("player1")
+  player2           matchhistory[]  @relation("player2")
+  messages          messages[]
+  rooms_members     rooms_members[]
+}
+
+model level {
+  id        Int @id @unique @default(autoincrement())
+  condition Int
+}
+
+model friendship {
+  id           Int                @id @unique @default(autoincrement())
+  initiator    Int
+  reciever     Int
+  status       relationsip_status
+  created_at   DateTime           @default(now())
+  initiator_id user               @relation("initiator", fields: [initiator], references: [id])
+  reciever_id  user               @relation("reciever", fields: [reciever], references: [id])
+
+  @@unique([initiator, reciever], name: "friendship")
+}
+
+model matchhistory {
+  id         String     @id @unique
+  player1    Int
+  player2    Int
+  score1     Int        @default(0)
+  score2     Int        @default(0)
+  winner_id  Int?
+  loser_id   Int?
+  mode       game_modes @default(EASY)
+  state      game_state @default(IN_PLAY)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  player1_id user       @relation("player1", fields: [player1], references: [id])
+  player2_id user       @relation("player2", fields: [player2], references: [id])
+}
+
+model rooms {
+  id            Int             @id @unique @default(autoincrement())
+  name          String?
+  roompassword  String?
+  roomtypeof    roomtype
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @default(now())
+  invites       invites[]
+  messages      messages[]
+  rooms_members rooms_members[]
+}
+
+model rooms_members {
+  id         Int             @id @unique @default(autoincrement())
+  roomid     Int
+  userid     Int
+  permission user_permission
+  isblocked  Boolean         @default(false)
+  ismuted    Boolean         @default(false)
+  isBanned   Boolean         @default(false)
+  created_at DateTime        @default(now())
+  mutetime   DateTime?
+  rooms      rooms           @relation(fields: [roomid], references: [id], onDelete: Cascade)
+  user_id    user            @relation(fields: [userid], references: [id])
+
+  @@unique([roomid, userid], name: "combination")
+}
+
+model messages {
+  id         Int      @id @unique @default(autoincrement())
+  room_id    Int
+  sender_id  Int
+  messages   String
+  created_at DateTime @default(now())
+  roomid     rooms    @relation(fields: [room_id], references: [id], onDelete: Cascade)
+  senderid   user     @relation(fields: [sender_id], references: [id])
+}
+
+model achievements {
+  id          Int        @id @unique @default(autoincrement())
+  name        String
+  icon        String
+  description String
+  won_xp      Int
+  created_at  DateTime   @default(now())
+  achieved    achieved[]
+}
+
+model achieved {
+  id            Int          @id @unique @default(autoincrement())
+  userid        Int
+  achievementid Int
+  count         Int
+  created_at    DateTime     @default(now())
+  achievment_id achievements @relation(fields: [achievementid], references: [id], onDelete: Cascade)
+  user_id       user         @relation(fields: [userid], references: [id])
+}
+
+model invites {
+  id          Int          @id @unique @default(autoincrement())
+  type        invitetype
+  status      actionstatus
+  issuer      Int
+  reciever    Int
+  room        Int?
+  game_mode   game_modes?  @default(EASY)
+  created_at  DateTime     @default(now())
+  game_id     String?
+  issuer_id   user         @relation("issuer", fields: [issuer], references: [id])
+  reciever_id user         @relation("reciever", fields: [reciever], references: [id])
+  room_id     rooms?       @relation(fields: [room], references: [id])
+}
+
+enum user_permission {
+  chat
+  participation
+  admin
+  owner
+}
+
+enum roomtype {
+  chat
+  private
+  public
+  protected
+}
+
+enum actionstatus {
+  pending
+  accepted
+  refused
+}
+
+enum invitetype {
+  Friend
+  Game
+  Room
+}
+
+enum game_modes {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum game_state {
+  IN_PLAY
+  FINISHED
+}
+
+enum current_state {
+  ONLINE
+  OFFLINE
+  IN_GAME
+}
+
+enum relationsip_status {
+  DEFAULT
+  IBLOCKED
+  RBLOCKED
+}

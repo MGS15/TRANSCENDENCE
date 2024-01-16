@@ -1,53 +1,88 @@
-name: ft_transcendence
-services:
-  frontend:
-    build:
-      context: frontend
-      target: development
-    networks:
-      - client-side
-    ports:
-      - 3000:3000
-    volumes:
-      - ./frontend/src:/code/src:ro
-  backend:
-    build:
-      args:
-      - NODE_ENV=development
-      context: backend
-      target: development
-    command: npm run start:dev
-    env_file:
-    - .env
-    ports:
-      - 3001:8001
-    volumes:
-      - ./backend/src:/code/src:ro
-      - ./backend/package.json:/code/package.json
-      - ./backend/package-lock.json:/code/package-lock.json
-      - back-notused:/opt/app/node_modules
-    networks:
-      - client-side
-      - server-side
-    depends_on:
-      - db
+  name: ft_transcendence
+  services:
+    frontend:
+      container_name: "ff"
+      build:
+        context: frontend
+        target: development
+      networks:
+        - client-side
+      ports:
+        - 3000:3000
+      volumes:
+        - ./frontend/src:/code/src:ro
+      env_file:
+        - .env
+    backend:
+      container_name: "bb"
+      build:
+        args:
+        - NODE_ENV=development
+        context: backend
+        target: dev-envs
+      command: "npm run t:d" 
+      restart: always
+      env_file:
+      - .env
+      ports:
+        - 3001:8001
+        - 5555:5555
+      volumes:
+        - ./backend/src:/code/src:rw
+        - ./backend/FileRepository:/code/FileRepository:rw
+        - ./backend/prisma:/code/prisma:rw
+        - ./backend/prisma/migrations:/code/prisma/migrations:rw
+        - back-notused:/opt/app/node_modules
+      networks:
+        - client-side
+        - server-side
+      depends_on:
+        # - prisma
+        - db
 
-  db:
-    image: postgres:12-alpine
-    restart: always
-    env_file:
-    - .env
-    networks:
-      - server-side
-    ports:
-      - 5432:5432
-    volumes:
-      - db-data:/var/lib/postgresql/data
+    db:
+      container_name: "dd"
+      image: postgres:12-alpine
+      restart: always
+      env_file:
+      - .env
+      networks:
+        - server-side
+      ports:
+        - 5432:5432
+      volumes:
+        - db-data:/var/lib/postgresql/data
 
-networks:
-  client-side: {}
-  server-side: {}
+    # prisma:
+    #     container_name: prisma
+    #     image: node:20.6.1
+    #     working_dir: /code
+    #     tty: true
+    #     volumes:
+    #         - ./backend:/code
+    #         - ./backend/prisma/seed/seed.sh:/code/seed.sh:rw
+    #     env_file:
+    #         - .env
+    #     command: sh seed.sh  && sleep 50 && echo 'Task finished. Shutting down...' && sleep 20"
+    #     networks:
+    #       - server-side
+    #     depends_on:
+    #         - db
+    pgadmin:
+      container_name: "pp"
+      image: dpage/pgadmin4
+      env_file:
+      - .env
+      ports:
+        - 5050:80
+      networks:
+        - server-side
+      depends_on:
+        - db
+  networks:
+    client-side: {}
+    server-side: {}
 
-volumes:
-  back-notused:
-  db-data: {}
+  volumes:
+    back-notused:
+    db-data: {}
