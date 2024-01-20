@@ -43,6 +43,7 @@ const routeinvites = (what:string, notif:INotificaion,  socket: any) =>
 	}
 
 }
+
 const NotificationItem = ({ notif }: { notif: INotificaion }) => {
 	const user = useContext(currentUser)
 	const socket = useContext(SocketContext)
