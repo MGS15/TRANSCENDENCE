@@ -30,9 +30,9 @@ const useInvites = (setNotification:any)=>
 	},[]);
 }
 
-const NotificationBar = ({toogle, settogle} : {toogle:number, settogle:any}) => {
+const NotificationBar = ({toogle, settogle, status} : {toogle:number, settogle:any, status:any}) => {
 	const [isOpen, seIsOpen] = useState(false);
-	const [state, setState] = useState(1);
+	const [state, setState] = useState(status);
 	const [notification, setNotification] = useState<INotificaion[] | null>(null);
 	const socket = useContext(SocketContext);
 	const [newAlert, setNewAlert] = useState(false)
