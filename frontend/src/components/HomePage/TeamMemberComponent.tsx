@@ -21,7 +21,7 @@ export const TeamLinks = [
 		githubLink: "https://github.com/waelzahir",
 		InstagramLink: "",
 		LinkedinLink: "https://www.linkedin.com/in/waelzahir/",
-		XLink: "",
+		XLink: "https://twitter.com/__OUAIL__",
 	},
 	{
 		name: "AYMANE ECHAFII",
