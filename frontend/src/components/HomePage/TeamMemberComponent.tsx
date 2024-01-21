@@ -13,14 +13,14 @@ export const TeamLinks = [
 		name: "TAHA EL MOUHAJIR",
 		githubLink: "https://github.com/paji1",
 		InstagramLink: "",
-		LinkedinLink: "",
+		LinkedinLink: "https://www.linkedin.com/in/taha-elmouhajir-183131183/",
 		XLink: "",
 	},
 	{
 		name: "OUAIL ZAHIR",
 		githubLink: "https://github.com/waelzahir",
 		InstagramLink: "",
-		LinkedinLink: "",
+		LinkedinLink: "https://www.linkedin.com/in/waelzahir/",
 		XLink: "",
 	},
 	{
@@ -34,7 +34,7 @@ export const TeamLinks = [
 		name: "MAHMOUD MEZIANI",
 		githubLink: "https://github.com/7ach7ouch101",
 		InstagramLink: "https://github.com/7ach7ouch",
-		LinkedinLink: "",
+		LinkedinLink: "https://www.linkedin.com/in/meziani-mahmoud-6b08b82ab/",
 		XLink: "",
 	},
 ];
