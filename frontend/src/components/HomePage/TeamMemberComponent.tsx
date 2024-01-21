@@ -5,9 +5,9 @@ export const TeamLinks = [
 	{
 		name: "SOUFIANE ELKHAMLICHI",
 		githubLink: "https://github.com/MGS15",
-		InstagramLink: "",
-		LinkedinLink: "",
-		XLink: "",
+		InstagramLink: "http://www.instagram.com/soufiane.mgs",
+		LinkedinLink: "https://www.linkedin.com/in/elkhamlichi",
+		XLink: "https://www.twitter.com/05Soufiane",
 	},
 	{
 		name: "TAHA EL MOUHAJIR",
