@@ -28,8 +28,17 @@ const useGetFrienshipsStatus = async (setisFriend: any, dashstate: IUser) => {
 	}
 };
 
-
-export default function ProfileDiv({ status, who, usr, func }: { status: Map<string, string> , who: Boolean; usr: IUser; func: any }) {
+export default function ProfileDiv({
+	status,
+	who,
+	usr,
+	func,
+}: {
+	status: Map<string, string>;
+	who: Boolean;
+	usr: IUser;
+	func: any;
+}) {
 	const [postContent, setPostContent] = useState("");
 	const [isFriend, setisFriend] = useState<boolean>(false);
 	const updateStatus = async () => {
@@ -53,37 +62,29 @@ export default function ProfileDiv({ status, who, usr, func }: { status: Map<str
 		}
 	};
 	const RmFR = () => {
-        fetch(`http://${ip}3001/invite/friend?friend=${usr.id}`, {
-            method: "DELETE",
-            credentials: "include",
-        })
-            .then((data) =>
-			{
-				if (data.status == 200)
-					toast("Deleted Friend uccesfully")
-				else
-					toast.error("failed to delete friend")
+		fetch(`http://${ip}3001/invite/friend?friend=${usr.id}`, {
+			method: "DELETE",
+			credentials: "include",
+		})
+			.then((data) => {
+				if (data.status == 200) toast("Deleted Friend uccesfully");
+				else toast.error("failed to delete friend");
+			})
 
-			} )
-          
-            .catch(() => toast.error(`search: network error`));
-    };
-const addFR = () => {
-        fetch(`http://${ip}3001/invite/friend?friend=${usr.id}`, {
-            method: "POST",
-            credentials: "include",
-        })
-		.then((data) =>
-		{
-			if (data.status == 200)
-				toast("added Friend uccesfully")
-			else
-				toast.error("failed to add friend")
+			.catch(() => toast.error(`search: network error`));
+	};
+	const addFR = () => {
+		fetch(`http://${ip}3001/invite/friend?friend=${usr.id}`, {
+			method: "POST",
+			credentials: "include",
+		})
+			.then((data) => {
+				if (data.status == 200) toast("added Friend uccesfully");
+				else toast.error("failed to add friend");
+			})
 
-		} )
-           
-            .catch(() => toast.error(`search: network error`));
-    };
+			.catch(() => toast.error(`search: network error`));
+	};
 	useGetFrienshipsStatus(setisFriend, usr);
 	return (
 		<div className="ProfileDiv Ft min-[0px]:mx-5 2xl:m-auto flex min-[0px]:flex-col-reverse lg:flex-row border-solid border-4 border-black shadow-[2px_4px_0px_0px_#000301] p-10 2xl:w-full max-w-[1536px]">
@@ -162,7 +163,7 @@ const addFR = () => {
 					{who ? <UploadTest /> : null}
 					<img
 						src={!usr || !usr.avatar ? Profil : usr.avatar}
-						className="border-4 min-[0px]:h-[6rem] min-[0px]:w-[6rem] sm:h-[10rem] sm:w-[10rem] lg:h-[14rem] lg:w-[14rem] xl:w-[16rem] xl:h-[16rem] border-black border-solid shadow-[2px_4px_0px_0px_#000301]"
+						className="border-4 h-[4rem] w-[4rem] sm:h-[10rem] sm:w-[10rem] lg:h-[14rem] lg:w-[14rem] xl:w-[16rem] xl:h-[16rem] border-black border-solid shadow-[2px_4px_0px_0px_#000301]"
 						alt="User profile picture"
 					></img>
 				</div>

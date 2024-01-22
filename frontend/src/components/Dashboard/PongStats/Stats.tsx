@@ -15,11 +15,11 @@ export default function Stats({ History }: { History: Histo[] | null }) {
 		}
 	});
 	return (
-		<div className="min-[0px]:mx-5 2xl:m-auto 2xl:w-full flex flex-col justify-center border-solid border-4 h-[850px] border-black max-w-[1536px] shadow-[2px_4px_0px_0px_#000301] p-20 pt-20 Ft gap-y-12">
-			<h1 className="truncate text-center text-xs sm:text-lg lg:text-2xl xl:text-3xl font-Nova font-bold ring-black ring-4 p-6 flex items-center justify-center m-5 w-full shadow-[2px_4px_0px_0px_#000301] bg-white">
+		<div className="min-[0px]:mx-5 2xl:m-auto 2xl:w-full flex flex-col justify-center border-solid border-4 h-[850px] border-black max-w-[1536px] shadow-[2px_4px_0px_0px_#000301] p-6 sm:p-20 pt-20 Ft gap-y-12">
+			<h1 className="truncate text-center text-xs sm:text-lg lg:text-2xl xl:text-3xl font-Nova font-bold ring-black ring-4 p-6 flex items-center justify-center w-full shadow-[2px_4px_0px_0px_#000301] bg-white">
 				PONG STATS
 			</h1>
-			<div className="ring-black ring-4 min-[0px]:pr-8 min-[0px]:pl-0 2xl:pr-24 2xl:p-14 h-full min-[0px]:mx-5 2xl:m-auto w-full p-12 bg-white shadow-[2px_4px_0px_0px_#000301]">
+			<div className="ring-black ring-4 min-[0px]:pr-8 min-[0px]:pl-0 2xl:pr-24 2xl:p-14 h-full min-[0px]:mx-5f 2xl:m-auto w-full p-12 bg-white shadow-[2px_4px_0px_0px_#000301]">
 				<ResponsiveContainer>
 					<LineChart data={datastat.array}>
 						<CartesianGrid strokeDasharray="3 3" />

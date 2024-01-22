@@ -9,7 +9,6 @@ interface PopupProps {
 	setloginuser: React.Dispatch<React.SetStateAction<string>>;
 }
 
-
 const Popup: React.FC<PopupProps> = ({ onClose, setPopupSignUpVisible, setPopupSignInVisible, setloginuser }) => {
 	const popupWindowRef = useRef<any>(null);
 	const [hasHandledMessage, setHasHandledMessage] = useState(false);
@@ -55,30 +54,39 @@ const Popup: React.FC<PopupProps> = ({ onClose, setPopupSignUpVisible, setPopupS
 	// }, []);
 	return (
 		<div className="fixed z-10 inset-0  flex items-center justify-center bg-black bg-opacity-50 max-w-[1536px] m-auto">
-			<div className="bg-DefaultColor p-6  font-Nova border-solid border-8 border-black shadow-[2px_4px_0px_0px_#000301] m-[12%] max-sm:max-w-[90%]" >
+			<div className="bg-DefaultColor p-6  font-Nova border-solid border-8 border-black shadow-[2px_4px_0px_0px_#000301] m-[12%] max-sm:max-w-[90%]">
 				<div className="b-50 m-[11%] mx-auto  max-sm:max-w-[90%] flex justify-evenly">
-				<div className="hidden w-[40%] lg:flex">
-						<AnimatedElement/>
+					<div className="hidden w-[40%] lg:flex">
+						<AnimatedElement />
 					</div>
 
 					<div className="border-solid flex flex-col justify-around  items-center text-center gap-y-10 w-[95%] md:w-[70%] lg:w-[45%]">
-						<p className="font-extrabold text-xl md:text-3xl animate-pulse">Sign in, and let the games begin!</p>
+						<p className="font-extrabold text-xl md:text-3xl animate-pulse">
+							Sign in, and let the games begin!
+						</p>
 						<p className="font-bold text-sm md:text-xl lg:text-center">
 							Ping-pong pal! It's been a minute, huh Recall the pixel paddle days? Get ready for a
 							nostalgia wave your fave ping-pong platform beckons!
 						</p>
 						{/* <div className="flex justify-center"> */}
-							<button
-								onClick={KarontdoIntra}
-								className="flex md:gap-x-5 border-solid bg-buttonColor text-black border-black shadow-[2px_4px_0px_0px_#000301] border-2 justify-center items-center w-[90%] sm:w-[55%] md:w-[50%] lg:w-[65%] sm:gap-x-2 p-2">
-								<img src={karontdo} className="h-[2rem] w-[2rem] mx-2 sm:mx-4 md:mx-0"></img>
-								<p className="font-bold text-xs sm:text-base">NETWORK</p>
-							</button>
+						<button
+							onClick={KarontdoIntra}
+							className="flex md:gap-x-5 border-solid bg-buttonColor text-black border-black shadow-[2px_4px_0px_0px_#000301] border-2 justify-center items-center w-[120%] min-[200px]:w-[100%] sm:w-[55%] md:w-[50%] lg:w-[65%] sm:gap-x-2 p-2"
+						>
+							<img
+								src={karontdo}
+								className="h-[1rem] w-[1rem] sm:h-[2rem] sm:w-[2rem] mx-1 sm:mx-4 md:mx-0"
+							></img>
+							<p className="font-bold text-xs sm:text-base">NETWORK</p>
+						</button>
 						{/* </div> */}
 					</div>
 				</div>
 
-				<button onClick={onClose} className="p-2 font-bold text-xs md:text-xl border-2 border-solid bg-buttonColor text-black border-black shadow-[2px_4px_0px_0px_#000301] w-[35%] sm:w-[20%]">
+				<button
+					onClick={onClose}
+					className="p-2 font-bold text-xs md:text-xl border-2 border-solid bg-buttonColor text-black border-black shadow-[2px_4px_0px_0px_#000301] w-[75%] sm:w-[20%]"
+				>
 					{" "}
 					Close{" "}
 				</button>
