@@ -24,7 +24,7 @@ import { RepositoryModule } from "./repository/repository.module";
 		UsersModule,
 		InviteModule,
 		ProfileModule,
-		RepositoryModule
+		RepositoryModule,
 	],
 
 	providers: [
