@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import karontdo from "../../assets/42.png";
 import { AnimatedElement } from "../game/GameSetup";
 
-interface PopupProps {
+export interface PopupProps {
 	onClose: () => void;
 	setPopupSignUpVisible: React.Dispatch<React.SetStateAction<boolean>>;
 	setPopupSignInVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -85,7 +85,7 @@ const Popup: React.FC<PopupProps> = ({ onClose, setPopupSignUpVisible, setPopupS
 
 				<button
 					onClick={onClose}
-					className="p-2 font-bold text-xs md:text-xl border-2 border-solid bg-buttonColor text-black border-black shadow-[2px_4px_0px_0px_#000301] w-[75%] sm:w-[20%]"
+					className="p-1 sm:p-2 font-bold text-xs md:text-xl border-2 border-solid bg-buttonColor text-black border-black shadow-[2px_4px_0px_0px_#000301] w-[40%] sm:w-[20%] ml-[33%] sm:ml-[40%]"
 				>
 					{" "}
 					Close{" "}

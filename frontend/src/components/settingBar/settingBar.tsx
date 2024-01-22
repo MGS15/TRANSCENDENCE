@@ -90,8 +90,8 @@ const SettingBar: FC<SettingBarProps> = ({ toogle, settogle }) => {
 							</p>
 						</div>
 
-						<div className="  col-span-2  justify-center  bg-red-800 text-slate-50 shadow-lg rounded-sm h-11 my-auto flex    ">
-							<button onClick={logouthandler}>log out</button>
+						<div className="  col-span-2  justify-center  bg-red-700 font-bold shadow-lg rounded-sm h-11 my-auto flex  border-solid border-black border-2 text-black  ">
+							<button onClick={logouthandler}>LOGOUT</button>
 						</div>
 					</div>
 					<hr className="my-1 h-0.5 border-t-0 bg-textColor opacity-100" />

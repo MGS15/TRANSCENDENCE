@@ -18,11 +18,10 @@ const MainButton: React.FC<buttonVariables> = (props) => {
 	const naviagte = useNavigate();
 
 	const handleButtonClick = () => {
-		if (props.name === "signin") {
+		if (props.name === "signin" || props.name === "JOIN US NOW") {
 			setPopupVisibil(true);
 			naviagte("/");
-		}
-		if (props.name !== "signin") {
+		} else {
 			naviagte("/game");
 			setPopupVisibil(false);
 		}
@@ -33,7 +32,7 @@ const MainButton: React.FC<buttonVariables> = (props) => {
 		<>
 			<button
 				className={`bg-buttonColor text-textColor w-full py-2 px-8
-			rounded-full shadow-buttonShadow border-solid border-textColor border-2
+			rounded-full shadow-buttonShadow border-solid border-textColor border-2 font-pixelify
 			`}
 				onClick={handleButtonClick}
 			>
