@@ -9,7 +9,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 const listItems = ["home", "about", "our-team", "button"].map((item: String, key: Number) =>
 	item === "button" ? (
-		<li className={`uppercase font-pixelify cursor-pointer py-2 h-auto`}>
+		<li className={`uppercase font-pixelify cursor-pointer py-2 mb-4 md:mb-0`}>
 			<MainButton name={`signin`} url={`test.com`} />
 		</li>
 	) : (
@@ -35,7 +35,7 @@ const UnloggedNavBar: React.FC<isOpen> = (props) => (
 			className={`
 			flex  absolute max-md:bg-DefaultColor max-md:z-10  md:relative max-md:flex-col
 			lg:flex-row w-full text-center items-center justify-content-center
-			top-9 left-0 lg:top-0 lg:flex gap-2
+			left-0 lg:top-0 lg:flex gap-2 my-10 md:my-2 rounded-xl
 		`}
 		>
 			{listItems}
@@ -49,7 +49,7 @@ const LoggedNavBar: React.FC<isOpen> = (props) => (
 			className={`
 			flex bg-background absolute md:relative flex-col
 			lg:flex-row w-full text-center items-center justify-content-center
-			top-9 left-0 lg:top-0 lg:flex gap-2
+			top-9 left-0 lg:top-0 lg:flex gap-2 
 		`}
 		>
 			<li key={1} className={`uppercase font-pixelify cursor-pointer py-2 h-auto md:mr-5`}>
@@ -78,7 +78,7 @@ const Navbar = () => {
 		`}
 		>
 			<button
-				onClick={() => navigate('/')}
+				onClick={() => navigate("/")}
 				className={`
 				font-xl font-bold text-primary uppercase font-pixelify md:text-2xl text-xl
 				`}
@@ -88,8 +88,8 @@ const Navbar = () => {
 
 			{user ? <LoggedNavBar isOpen={isOpen} /> : <UnloggedNavBar isOpen={isOpen} />}
 
-			<div className="md:hidden">
-				<button className="flex justify-center items-center" onClick={toggleNavBar}>
+			<div className="md:hidden ">
+				<button className="flex justify-center items-center " onClick={toggleNavBar}>
 					<svg
 						viewBox="0 0 24 24"
 						width="24"
@@ -99,7 +99,7 @@ const Navbar = () => {
 						fill="none"
 						strokeLinecap="round"
 						strokeLinejoin="round"
-						className={isOpen ? "hidden" : "flex"}
+						className={isOpen ? "hidden " : "flex"}
 					>
 						<line x1="3" y1="12" x2="21" y2="12"></line>
 						<line x1="3" y1="6" x2="21" y2="6"></line>
