@@ -10,6 +10,21 @@ import { toast } from "react-toastify";
 import { ip } from "../../network/ipaddr";
 import { SocketContext } from "../Context/SocketContext";
 
+
+const useGetExperience = async (setxpdata: any) => {
+	useEffect(() => {
+		fetch(`http://${ip}3001/invite/exp`, {
+			method: "GET",
+			credentials: "include",
+		})
+			.then((data) => data.json())
+			.then((data) => {
+				console.log(data, "weeeeeeeee")
+				setxpdata(data);
+			}).catch((err => {toast.error("Error getting experience points")}));
+	}, []);
+};
+
 const useInvites = (setNotification: any) => {
 	useEffect(() => {
 		const fetchData = async () => {
@@ -27,6 +42,7 @@ const useInvites = (setNotification: any) => {
 const NotificationBar = ({ toogle, settogle, status }: { toogle: number; settogle: any; status: any }) => {
 	const [isOpen, seIsOpen] = useState(false);
 	const [state, setState] = useState(status);
+	const [data, setxpdata] = useState<number>(0);
 	const [notification, setNotification] = useState<INotificaion[] | null>(null);
 	const socket = useContext(SocketContext);
 	const [newAlert, setNewAlert] = useState(false);
@@ -48,7 +64,7 @@ const NotificationBar = ({ toogle, settogle, status }: { toogle: number; settogl
 		else newnotifstate[index].status = data.status;
 		setNotification(newnotifstate);
 	});
-
+	useGetExperience(setxpdata);
 	let invites;
 	if (notification) invites = notification.map((ha, key) => <NotificationItem key={ha.id} notif={ha} />);
 	return (
@@ -92,10 +108,12 @@ const NotificationBar = ({ toogle, settogle, status }: { toogle: number; settogl
 						</div>
 
 						<div className="col-span-2 flex items-center justify-center h-full">
-							<button>level</button>
+							<p>level { data ? data.toString().length : "0" }  </p>
+
+
 						</div>
 						<div className="col-span-2 flex items-center justify-center h-full">
-							<button>view profile</button>
+							<p>exp {data}</p>
 						</div>
 					</div>
 					<hr className="my-1 h-0.5 border-t-0 bg-textColor opacity-100" />
