@@ -1,10 +1,9 @@
-import { Controller, Get, Post, Delete, Query, Patch, HttpException, HttpStatus, Res ,Param} from "@nestjs/common";
+import { Controller, Get, Post, Delete, Query, Patch, HttpException, HttpStatus, Res, Param } from "@nestjs/common";
 import { InviteService } from "./invite.service";
 import { GetCurrentUserId, Public } from "src/common/decorators";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { WebSocketServer } from "@nestjs/websockets";
 import { Server } from "socket.io";
-
 
 @Controller("invite")
 export class InviteController {
@@ -16,14 +15,12 @@ export class InviteController {
 	@WebSocketServer()
 	server: Server;
 
-
 	@Get()
 	async Handler(@GetCurrentUserId() user: number) {
 		return await this.inviteService.getdatainvite(user);
 	}
 	@Get("exp")
-	async GetExpUser(@GetCurrentUserId() id:number)
-	{
+	async GetExpUser(@GetCurrentUserId() id: number) {
 		return await this.inviteService.GetExpUser(id);
 	}
 
