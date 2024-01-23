@@ -64,14 +64,14 @@ export default function Carousel({ achivments }: { achivments: any | null }) {
 			</div>
 			<div className="overflow-hidden snap-mandatory snap-x inner whitespace-nowrap border-4 border-solid boder-black m-9 shadow-[2px_4px_0px_0px_#000301]">
 				{items.map((item: achived, index: number) => {
-					const exist = (index < l || index == 0) ? true : false;
+					const exist = index < l || index == 0 ? true : false;
 					return (
 						<div
-						key={index}
+							key={index}
 							className="inline-flex w-full transition-transform delay-150 duration-1000 ease-in-out snap-center"
 							style={{ transform: `translate(-${activeIndex * 100}%)` }}
 						>
-							<CarouselItem  hasit={exist} item={item} image={newimages.images[index]} />
+							<CarouselItem hasit={exist} item={item} image={newimages.images[index]} />
 						</div>
 					);
 				})}

@@ -67,7 +67,7 @@ export default function ProfileDiv({
 			credentials: "include",
 		})
 			.then((data) => {
-				if (data.status == 200) toast("Deleted Friend uccesfully");
+				if (data.status == 200) toast("Deleted Friend succesfully");
 				else toast.error("failed to delete friend");
 			})
 
@@ -79,7 +79,7 @@ export default function ProfileDiv({
 			credentials: "include",
 		})
 			.then((data) => {
-				if (data.status == 200) toast("added Friend uccesfully");
+				if (data.status == 200) toast("added Friend succesfully");
 				else toast.error("failed to add friend");
 			})
 

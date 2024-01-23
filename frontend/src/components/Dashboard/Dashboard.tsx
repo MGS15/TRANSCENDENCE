@@ -21,7 +21,10 @@ const useGetTrophiesData = async (settrdata: any, nickname: string | undefined) 
 			.then((data) => data.json())
 			.then((data) => {
 				settrdata(data);
-			}).catch((err => {toast.error("Error getting achievements")}));
+			})
+			.catch((err) => {
+				toast.error("Error getting achievements");
+			});
 	}, []);
 };
 
@@ -34,7 +37,10 @@ const useGetGamingData = async (setgdata: any, nickname: string | undefined) => 
 			.then((data) => data.json())
 			.then((data) => {
 				setgdata(data);
-			}).catch((err => {toast.error("Error getting GamingHistory")}));
+			})
+			.catch((err) => {
+				toast.error("Error getting GamingHistory");
+			});
 	}, []);
 };
 
@@ -47,7 +53,10 @@ const useGetFLadderData = async (setfladder: any, nickname: string | undefined) 
 			.then((data) => data.json())
 			.then((data) => {
 				setfladder(data);
-			}).catch((err => {toast.error("Error getting Friends Ladder")}));
+			})
+			.catch((err) => {
+				toast.error("Error getting Friends Ladder");
+			});
 	}, []);
 };
 
@@ -60,7 +69,10 @@ const useGetLadderData = async (setgladder: any, nickname: string | undefined) =
 			.then((data) => data.json())
 			.then((data) => {
 				setgladder(data);
-			}).catch((err => {toast.error("Error getting Global Ladder")}));
+			})
+			.catch((err) => {
+				toast.error("Error getting Global Ladder");
+			});
 	}, []);
 };
 
@@ -80,7 +92,7 @@ const useGetUserdata = async (setdashstate: any, nickname: string | undefined) =
 	}, [nickname]);
 };
 
-export default function Dashboard({status} : {status: Map<string, string>}) {
+export default function Dashboard({ status }: { status: Map<string, string> }) {
 	const user = useContext(currentUser);
 	const [dashstate, setdashstate] = useState<IUser | null>(null);
 	const [gladder, setgladder] = useState<IUser[] | null>(null);
