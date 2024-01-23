@@ -25,32 +25,29 @@ import IUser from "./types/User";
 
 // TODO: this is a temporary trqi3a
 
-
-interface AsyncRefreshtoken  {
+interface AsyncRefreshtoken {
 	setitems: React.Dispatch<any>;
 	item: any;
 	setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
-	userin : React.MutableRefObject<CurrentUser | null>;
+	userin: React.MutableRefObject<CurrentUser | null>;
 	islogin: boolean;
-
 }
-const asyncRefreshtoken = async ( prop : AsyncRefreshtoken)  => {
-
+const asyncRefreshtoken = async (prop: AsyncRefreshtoken) => {
 	await axios
-							.post("http://hahach.ddns.net:3001/auth/refresh", {}, { withCredentials: true })
-							.then((res) => {
-								prop.setitems(Cookies.get("userData"));
-								if (prop.item && prop.islogin) {
-									prop.userin.current = JSON.parse(prop.item).user;
-									// setuser(userin.current);
-								}
-								prop.setIsLogin(true);
-							})
-							.catch((err): any => {
-								// console.error("axios get refresh error:", err);
-								// toast.error("error : refresh token not found");
-							});
-} 
+		.post("http://hahach.ddns.net:3001/auth/refresh", {}, { withCredentials: true })
+		.then((res) => {
+			prop.setitems(Cookies.get("userData"));
+			if (prop.item && prop.islogin) {
+				prop.userin.current = JSON.parse(prop.item).user;
+				// setuser(userin.current);
+			}
+			prop.setIsLogin(true);
+		})
+		.catch((err): any => {
+			// console.error("axios get refresh error:", err);
+			// toast.error("error : refresh token not found");
+		});
+};
 const App = () => {
 	const userin = useRef<CurrentUser | null>(null);
 	const [user, setuser] = useState<CurrentUser | null>(null);
@@ -59,32 +56,30 @@ const App = () => {
 	const socket = useContext(SocketContext);
 	const [togglebar, settoglebar] = useState(0);
 	const [isLoading, setLoading] = useState(true);
-	const [status, setstatus] = useState<Map<string, string>>(new Map())
+	const [status, setstatus] = useState<Map<string, string>>(new Map());
 	useEffect(() => {
 		setTimeout(() => {
 			setLoading(false);
 		}, 2500);
 	});
 	// this section to be moved out of this component
-	useEffect(()=> {socket.emit("ONNSTATUS", {"room": -1})},
-	[user])
-	socket.off("ON_STATUS").on("ON_STATUS", (usersstatus: IUser[]) => 
-	{
-		
-		usersstatus.map((user:IUser)=> status.set(user.nickname, user.connection_state))
+	useEffect(() => {
+		socket.emit("ONNSTATUS", { room: -1 });
+	}, [user]);
+	socket.off("ON_STATUS").on("ON_STATUS", (usersstatus: IUser[]) => {
+		usersstatus.map((user: IUser) => status.set(user.nickname, user.connection_state));
 		setstatus(new Map(status));
-		console.log("updateted status", status)
-	})
-// this section to be moved out of this component
+		console.log("updateted status", status);
+	});
+	// this section to be moved out of this component
 
 	useEffect(() => {
 		console.log("start");
 		const isLoggedIn = async () => {
 			const res = await fetch(`http://${ip}3001/users/isLogin`, { credentials: "include", method: "GET" })
-			.then(async (res) => {
-				if (!res.ok) {
-					
-						asyncRefreshtoken({setitems,item, setIsLogin,userin ,islogin})
+				.then(async (res) => {
+					if (!res.ok) {
+						asyncRefreshtoken({ setitems, item, setIsLogin, userin, islogin });
 						throw new Error(`Error! status ${res.status}`);
 					}
 
@@ -135,7 +130,7 @@ const App = () => {
 										<></>
 									)}
 									{(togglebar === 0 || togglebar === 2) && userin.current ? (
-										<NotificationBar toogle={togglebar} settogle={settoglebar}/>
+										<NotificationBar toogle={togglebar} settogle={settoglebar} />
 									) : (
 										<></>
 									)}
@@ -149,9 +144,9 @@ const App = () => {
 							<Routes>
 								<Route path="/search" element={<SearchWindow />} />
 								{userin.current ? (
-									<Route path="/" element={<Dashboard  status={status}/>}>
-										<Route path="/profile" element={<Dashboard status={status}/>} />
-										<Route path="/profile/:nickname" element={<Dashboard status={status}/>} />
+									<Route path="/" element={<Dashboard status={status} />}>
+										<Route path="/profile" element={<Dashboard status={status} />} />
+										<Route path="/profile/:nickname" element={<Dashboard status={status} />} />
 									</Route>
 								) : (
 									<Route path="/" element={<HomePage />} />
