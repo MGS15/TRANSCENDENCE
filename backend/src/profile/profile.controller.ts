@@ -11,7 +11,6 @@ export class ProfileController {
 
 	@Get("user/:id")
 	async findOne(@Param("id") id: string) {
-
 		return await this.profileService.findOne(id);
 	}
 
@@ -23,13 +22,10 @@ export class ProfileController {
 	@Patch("updateStatus")
 	async update(@GetCurrentUserId() id: number, @Body() updateProfileDto: UpdateProfileDto) {
 		return await this.profileService.update(id, updateProfileDto);
-	
 	}
 
 	@Get("achieved")
-	async getachieved(@GetCurrentUserId() id: number) {
-
-	}
+	async getachieved(@GetCurrentUserId() id: number) {}
 
 	@Get(":id/GamingHistory")
 	async getData(@GetCurrentUserId() id: number) {
