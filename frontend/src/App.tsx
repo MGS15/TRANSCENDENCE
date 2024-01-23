@@ -135,7 +135,7 @@ const App = () => {
 										<></>
 									)}
 									{(togglebar === 0 || togglebar === 2) && userin.current ? (
-										<NotificationBar toogle={togglebar} settogle={settoglebar} status={status}/>
+										<NotificationBar toogle={togglebar} settogle={settoglebar}/>
 									) : (
 										<></>
 									)}
