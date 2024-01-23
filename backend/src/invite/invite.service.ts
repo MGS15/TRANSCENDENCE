@@ -13,18 +13,18 @@ export class InviteService {
 		private readonly roomservice: RoomsService,
 	) {}
 
-	async GetExpUser(id: number){
+	async GetExpUser(id: number) {
 		const exp = await this.prisma.user.findUnique({
-			where:{
-				id : id,
+			where: {
+				id: id,
 			},
 			select: {
 				experience_points: true,
-			}
-		})
+			},
+		});
 		return exp.experience_points;
 	}
-		
+
 	async getdatainvite(userid: number) {
 		const invites = await this.prisma.invites.findMany({
 			where: {
