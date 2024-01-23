@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 import { ip } from "../../network/ipaddr";
 import { SocketContext } from "../Context/SocketContext";
 
-
 const useGetExperience = async (setxpdata: any) => {
 	useEffect(() => {
 		fetch(`http://${ip}3001/invite/exp`, {
@@ -19,9 +18,12 @@ const useGetExperience = async (setxpdata: any) => {
 		})
 			.then((data) => data.json())
 			.then((data) => {
-				console.log(data, "weeeeeeeee")
+				console.log(data, "weeeeeeeee");
 				setxpdata(data);
-			}).catch((err => {toast.error("Error getting experience points")}));
+			})
+			.catch((err) => {
+				toast.error("Error getting experience points");
+			});
 	}, []);
 };
 
@@ -39,9 +41,8 @@ const useInvites = (setNotification: any) => {
 	}, []);
 };
 
-const NotificationBar = ({ toogle, settogle, status }: { toogle: number; settogle: any; status: any }) => {
+const NotificationBar = ({ toogle, settogle }: { toogle: number; settogle: any }) => {
 	const [isOpen, seIsOpen] = useState(false);
-	const [state, setState] = useState(status);
 	const [data, setxpdata] = useState<number>(0);
 	const [notification, setNotification] = useState<INotificaion[] | null>(null);
 	const socket = useContext(SocketContext);
@@ -95,22 +96,10 @@ const NotificationBar = ({ toogle, settogle, status }: { toogle: number; settogl
 							<h2 className={`text-primary font-pixelify font-bold text-lg`}>
 								{user ? user.nickname : "Loading..."}
 							</h2>
-							<p
-								className={`${
-									state === 1 ? "text-sucessColor" : state === 2 ? "text-errorColor" : "text-primary"
-								}
-							text-xs
-						`}
-							>
-								<span>•</span>
-								{state === 1 ? " Online" : state === 2 ? "Offline" : "In-game"}
-							</p>
 						</div>
 
 						<div className="col-span-2 flex items-center justify-center h-full">
-							<p>level { data ? data.toString().length : "0" }  </p>
-
-
+							<p>level {data ? data.toString().length : "0"} </p>
 						</div>
 						<div className="col-span-2 flex items-center justify-center h-full">
 							<p>exp {data}</p>
