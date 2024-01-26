@@ -1,5 +1,4 @@
 import Socials from "./SocialMediaComponent";
-import ProfilePic from "../../assets/profile.png";
 
 export const TeamLinks = [
 	{
@@ -48,7 +47,7 @@ export default function TeamMember(props: any) {
 				className={`${props.order} border-solid border-4 border-black bg-white min-[0px]:p-4 sm:p-5 md:p-6 flex place-content-center min-[0px]:w-[40%] sm:w-[35%] min-[0px]:ml-[13%] lg:m-auto lg:w-[30%] lg:mx-9`}
 			>
 				<img
-					src={ProfilePic}
+					src={props.pic}
 					alt="pic"
 					className=" m-4 sm:w-[320px] lg:w-[330px]md:p-12 border-solid border-black border-4 bg-DefaultColor"
 				></img>
