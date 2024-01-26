@@ -31,7 +31,7 @@ export default function Team() {
 					Color={"bg-JacobsBlueColor"}
 					order=""
 					name="OUAIL ZAHIR"
-					description="WAEIL, "
+					description="WAEIL, much like Zoro, Our backend-development in the team. With a keen eye for detail and dedication to refining his craft, WAEIL effortlessly navigates the complexities of backend systems, much like Zoro wields his swords with unmatched precision.  WAEIL demonstrates commitment to our team's objectives, ensuring that backend operations are executed efficiently."
 				/>
 				<TeamMembers
 					pic={Sanji}
