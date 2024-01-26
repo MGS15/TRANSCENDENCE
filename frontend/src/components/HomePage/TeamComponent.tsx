@@ -38,14 +38,14 @@ export default function Team() {
 					Color={"bg-secondary"}
 					order={"order-last"}
 					name="AYMANE ECHAFII"
-					description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed risus at nulla porttitor interdum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras faucibus quam a velit sodales pellentesque. Nulla congue, eros non vestibulum malesuada, risus nisl interdum elit, et sagittis nulla sapien congue leo. Duis sit amet sagittis odio, vel facilisis urna. Suspendisse sed ipsum nec ex tincidunt iaculis. Curabitur eget sagittis nunc, eget luctus quam."
+					description="AYMANE is a versatile asset to our team, with a remarkable flexibility in front-end development. Who effortlessly adapts to different aspects of the project, His ability to seamlessly transition between various frameworks, languages, and design principles reflects his versatility. Aymane's knack for understanding user experience and his creative approach to interface design enhance the appeal and functionality of our projects."
 				/>
 				<TeamMembers
 					pic={luffy}
 					Color={"bg-errorColor"}
 					order=""
 					name="MAHMOUD MEZIANI"
-					description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sed risus at nulla porttitor interdum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras faucibus quam a velit sodales pellentesque. Nulla congue, eros non vestibulum malesuada, risus nisl interdum elit, et sagittis nulla sapien congue leo. Duis sit amet sagittis odio, vel facilisis urna. Suspendisse sed ipsum nec ex tincidunt iaculis. Curabitur eget sagittis nunc, eget luctus quam."
+					description="7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach 7ach7ach."
 				/>
 			</div>
 		</div>
